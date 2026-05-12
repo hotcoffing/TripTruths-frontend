@@ -1,16 +1,34 @@
-# React + Vite
+# TripTruth
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 📝 폴더 구조
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+src
+├── apis        # 서버 통신 및 API 요청 관련 로직 관리
+├── assets      # 이미지, 폰트, 아이콘 등 정적 리소스 관리
+├── components  # 재사용 가능한 공통 UI 컴포넌트 관리
+├── constants   # 프로젝트 전역에서 사용하는 상수 값 관리
+├── hooks       # 커스텀 훅(Custom Hooks) 관리
+├── layouts     # 공통 레이아웃 컴포넌트 관리
+├── pages       # 페이지 단위 컴포넌트 관리
+├── routes      # 라우팅 및 경로 관련 설정 관리
+├── styles      # 전역 스타일 및 공통 스타일 파일 관리
+└── utils       # 공통 유틸 함수 관리
+```
 
-## React Compiler
+## 🔧커밋 컨벤션
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Tag      | descrtion                                                           |
+| -------- | ------------------------------------------------------------------- |
+| feat     | 새로운 기능을 추가하는 경우                                         |
+| fix      | 버그를 고친경우                                                     |
+| docs     | 문서를 수정한 경우                                                  |
+| style    | 코드 포맷 변경, 세미콜론 누락, 코드 수정이 없는경우                 |
+| refactor | 코드 리펙토링                                                       |
+| test     | 테스트 코드. 리펙토링 테스트 코드를 추가했을 때                     |
+| chore    | 빌드 업무 수정, 패키지 매니저 수정                                  |
+| design   | CSS 등 사용자가 UI 디자인을 변경했을 때                             |
+| rename   | 파일명(or 폴더명) 을 수정한 경우                                    |
+| remove   | 코드(파일) 의 삭제가 있을 때. "Clean", "Eliminate" 를 사용하기도 함 |
