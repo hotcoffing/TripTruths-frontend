@@ -1,4 +1,4 @@
-import style from "./survey_button.module.scss"; 
+import style from "./SurveyButton.module.scss"; 
 
 function SurveyButton({ 
     type,                       // 버튼의 스타일 
