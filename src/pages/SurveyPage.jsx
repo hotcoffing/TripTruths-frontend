@@ -42,7 +42,10 @@ function SurveyPage() {
         nowForm,
         isError,
         isToNext,
+        text,
+        currentCharge,
         selectedList,
+        selectedTags,
         handleButtonClick,
         handleSubmit
     } = useSurvey();
@@ -71,7 +74,7 @@ function SurveyPage() {
     }
 
     return (
-        <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
+        <div>
             {renderForm()}
         </div>
     );
