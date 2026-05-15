@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import styles from './AnalysisStepList.module.scss';
 import { ANALYSIS_STEPS } from '@/constants/analysisSteps';
 import AnalysisStepItem from './AnalysisStepItem';
+import { useNavigate } from 'react-router-dom';
 
 const AnalysisStepList = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
 
   // 2초마다 step이 변경되도록 설정
@@ -13,6 +15,7 @@ const AnalysisStepList = () => {
       setCurrentStep((prev) => {
         if (prev >= ANALYSIS_STEPS.length) {
           clearInterval(interval);
+          navigate('/results');
           return prev + 1;
         }
 
