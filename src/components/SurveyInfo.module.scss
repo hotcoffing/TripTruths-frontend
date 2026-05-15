@@ -1,0 +1,49 @@
+/* 변수 설정 */
+$text-main-color: #191919;      
+$text-sub-color: #555555;       
+
+.infoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;     
+    text-align: center;       
+    width: 100%;
+    padding: 40px 20px 20px;  
+    box-sizing: border-box;
+    font-family: "Pretendard Variable", sans-serif;
+    line-height: 140%;
+    letter-spacing: 2.4%;  
+
+    // 아이콘 설정
+    .imgIcon {
+        width: 24px;            // 이미지 크기는 기획에 맞게 조정 필요
+        height: auto;
+        object-fit: contain;
+        margin-bottom: 1vh;     
+    }
+
+    // 아이콘 설명
+    .imgDescription {
+        font-size: 12px;
+        font-weight: 300;
+        color: $text-main-color;
+        margin-bottom: 3vh;     
+    }
+
+    // 메인 질문
+    .questionDescription {
+        font-size: 20px;       
+        font-weight: 600;       
+        color: $text-main-color;
+        margin-bottom: 1.5vh;      
+    }
+
+    // 질문 서브 설명
+    .subDescription {
+        font-size: 12px;
+        font-weight: 400;       
+        letter-spacing: 0%;
+        color: $text-sub-color;
+        margin: 0;
+    }
+}
