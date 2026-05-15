@@ -1,11 +1,10 @@
-import {
-  AnalysisProcessActiveSvg,
-  AnalysisProcessDoneSvg,
-  AnalysisProcessPendingSvg,
-} from '@/assets/svg/AnalysisSvgs';
 import styles from './AnalysisStepItem.module.scss';
+import { memo } from 'react';
+import { ANALYSIS_STEP_STATUS_META } from '@/constants/analysisStepStatus';
 
 const AnalysisStepItem = ({ step, status }) => {
+  const { label, connector: ConnectorIcon } = ANALYSIS_STEP_STATUS_META[status];
+
   return (
     <div
       className={`${styles['analysis-step-item']} ${styles[`status-${status}`]}`}
@@ -13,28 +12,16 @@ const AnalysisStepItem = ({ step, status }) => {
       <p className={styles['analysis-step-number']}>{step.id}</p>
       {step.id !== 4 && (
         <div className={styles['analysis-step-connector']}>
-          {status === 'pending' ? (
-            <AnalysisProcessPendingSvg />
-          ) : status === 'active' ? (
-            <AnalysisProcessActiveSvg />
-          ) : (
-            <AnalysisProcessDoneSvg />
-          )}
+          <ConnectorIcon />
         </div>
       )}
       <div className={styles['analysis-step-item-text']}>
         <span>{step.title}</span>
         <span>{step.description}</span>
       </div>
-      <div className={styles['analysis-step-item-status']}>
-        {status === 'pending'
-          ? '대기중'
-          : status === 'active'
-            ? '진행중'
-            : '완료'}
-      </div>
+      <div className={styles['analysis-step-item-status']}>{label}</div>
     </div>
   );
 };
 
-export default AnalysisStepItem;
+export default memo(AnalysisStepItem);

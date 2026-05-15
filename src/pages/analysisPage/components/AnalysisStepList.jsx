@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles from './AnalysisStepList.module.scss';
-import { analysisSteps } from '@/constants/analysisSteps';
+import { ANALYSIS_STEPS } from '@/constants/analysisSteps';
 import AnalysisStepItem from './AnalysisStepItem';
 
 const AnalysisStepList = () => {
@@ -11,7 +11,7 @@ const AnalysisStepList = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentStep((prev) => {
-        if (prev >= analysisSteps.length) {
+        if (prev >= ANALYSIS_STEPS.length) {
           clearInterval(interval);
           return prev + 1;
         }
@@ -25,7 +25,7 @@ const AnalysisStepList = () => {
 
   return (
     <div className={styles['analysis-step-list']}>
-      {analysisSteps.map((step) => {
+      {ANALYSIS_STEPS.map((step) => {
         // 현재 step과 비교하여 status 결정
         const status =
           step.id === currentStep

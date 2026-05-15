@@ -1,4 +1,4 @@
-export const analysisSteps = [
+export const ANALYSIS_STEPS = [
   {
     id: 1,
     title: '수집',
