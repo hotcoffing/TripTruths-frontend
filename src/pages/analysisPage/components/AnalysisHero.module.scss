@@ -1,0 +1,31 @@
+.analysis-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 36px;
+}
+
+.analysis-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  p {
+    text-align: center;
+    font-style: normal;
+    line-height: 140%; /* 19.6px */
+  }
+  p:nth-child(1) {
+    color: var(--, #191919);
+    font-size: 22px;
+    font-weight: 600;
+  }
+  p:nth-child(2) {
+    color: #848b9c;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
