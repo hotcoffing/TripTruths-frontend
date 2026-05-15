@@ -36,8 +36,8 @@ function SurveyTextBox({ text, setText, type, onChange }) {
                 onChange={handleChange}
             />
             <div className={[
-                style.charCount,
-                isLimit ? style.errorText : "" // 200자 도달 시 텍스트 색상 변경
+                style['char-count'],
+                isLimit ? style['error-text'] : "" // 200자 도달 시 텍스트 색상 변경
             ].filter(Boolean).join(" ")}>
                 {text.length}/{maxLength}
             </div>

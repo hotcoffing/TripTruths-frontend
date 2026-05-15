@@ -13,14 +13,14 @@ function Q1Form({
     const countMax = 2;
 
     return (
-        <div className={style.Q1Container}>
+        <div className={style['Q1-container']}>
             <SurveyInfo 
                 type="Q1"
                 isError={isError}
             />
             <br />
 
-            <div className={style.selectButtonContainer}>
+            <div className={style['select-button-container']}>
                 {selectList.map((item) => (
                     <Button 
                         key={item.id} 

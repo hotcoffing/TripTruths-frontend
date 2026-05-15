@@ -11,16 +11,16 @@ const SurveySlider = ({ currentCharge, setCurrentCharge }) => {
     { length: (max - min) / step + 1 }, (_, i) => min + i * step);
 
   return (
-    <div className={style.sliderWrapper}>
+    <div className={style['slider-wrapper']}>
       {/* 상단 현재 값 표시 */}
-      <div className={style.valueDisplay}>
+      <div className={style['value-display']}>
         <p className={style.total}>
           {currentCharge}만 원 {currentCharge === max ? '+' : ''}
         </p>
         <p className={style.description}>5만 원 단위로 설정 가능합니다</p>
       </div>
 
-      <div className={style.sliderContainer}>
+      <div className={style['slider-container']}>
         {/* 실제 슬라이더 Input (절대 색상 사용) */}
         <input
             type="range"
@@ -29,7 +29,7 @@ const SurveySlider = ({ currentCharge, setCurrentCharge }) => {
             step={step}
             value={currentCharge}
             onChange={(e) => setCurrentCharge(Number(e.target.value))}
-            className={style.rangeInput}
+            className={style['range-input']}
             style={{
                 // 최대값(100)일 때는 전체를 주황색으로, 그 외에는 그라데이션 적용
                 background: currentCharge === max 
@@ -43,7 +43,7 @@ const SurveySlider = ({ currentCharge, setCurrentCharge }) => {
         />
 
         {/* 눈금자 (datalist를 활용) */}
-        <datalist id="tickmarks" className={style.tickList}>
+        <datalist id="tickmarks" className={style['tick-list']}>
           {ticks.map((tick) => (
             <option key={tick} value={tick}></option>
           ))}

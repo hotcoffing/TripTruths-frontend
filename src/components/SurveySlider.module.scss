@@ -2,13 +2,13 @@ $orange-color: #FF822E;
 $slider-bg: #F2F2F2;
 $label-color: #848B9C;
 
-.sliderWrapper {
+.slider-wrapper {
     padding: 0 3vw; 
     width: 100%;
     box-sizing: border-box;
 
     // 상단 현재 값 표시 스타일
-    .valueDisplay {
+    .value-display {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -29,14 +29,14 @@ $label-color: #848B9C;
     }
     
     // 슬라이더 전체 컨테이너 스타일
-    .sliderContainer {
+    .slider-container {
         position: relative;
         width: 100%;
         padding: 20px 0;
         touch-action: none;     // 슬라이더 드래그 시 스크롤 방지
     
         // 슬라이더 Input 스타일
-        .rangeInput {
+        .range-input {
             -webkit-appearance: none;       // 기본 스타일 제거
             width: 100%;
             height: 12px;
@@ -59,7 +59,7 @@ $label-color: #848B9C;
         }
 
         // 눈금자 스타일
-        .tickList {
+        .tick-list {
             display: flex;
             justify-content: space-between;
             width: 100%;

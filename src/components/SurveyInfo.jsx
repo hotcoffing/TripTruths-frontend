@@ -50,12 +50,12 @@ function SurveyInfo({ type, isError = false }) {
 
     // 3. JSX 데이터 바인딩
     return (
-        <div className={style.infoContainer}>
-            <img src={imgSrc} alt={type} className={style.imgIcon} />
-            <p className={style.imgDescription}>{imgDescription}</p>
+        <div className={style['info-container']}>
+            <img src={imgSrc} alt={type} className={style['img-icon']} />
+            <p className={style['img-description']}>{imgDescription}</p>
             <br />
-            <p className={style.questionDescription}>{questionDescription}</p>
-            {subDescription && <p className={style.subDescription}>{subDescription}</p>}
+            <p className={style['question-description']}>{questionDescription}</p>
+            {subDescription && <p className={style['sub-description']}>{subDescription}</p>}
         </div>  
     );
 }
