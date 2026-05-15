@@ -18,7 +18,7 @@ const AnalysisStepList = () => {
 
         return prev + 1;
       });
-    }, 2000);
+    }, 2400);
 
     return () => clearInterval(interval);
   }, []);
