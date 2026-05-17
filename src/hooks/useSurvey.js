@@ -72,7 +72,7 @@ export function useSurvey() {
     };
 
     // 다음 버튼을 누르는 경우의 데이터 제출 핸들러 (다음 버튼)
-    const handleSubmit = (targetForm, formData) => {
+    const handleSubmit = (targetForm, formData, nextFormData = null) => {
         // API 전달 구현 필요
 
         // Q1, Q2 유효성 검사 (버튼 선택형)
@@ -106,7 +106,7 @@ export function useSurvey() {
         setNowForm(targetForm);
         setIsError(false);
         // 현재는 구조상 하드코딩으로 설정 (추후 프로젝트 구조의 사용자 흐름이 변경되지 않는한 무조건 고정)
-        if (q2SelectedList.length === 0) {
+        if (nextFormData && nextFormData.length === 0) {
             setIsToNext(false);
         }
     };

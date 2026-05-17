@@ -1,6 +1,7 @@
 import style from './Q1Form.module.scss';
 import SurveyInfo from '../feat/SurveyInfo';
 import Button from '../feat/SurveyButton';
+import { useSurvey } from '../../hooks/useSurvey';
 
 function Q1Form({ 
         isError,            // Info의 이미지 에러 출력을 위한 변수 
@@ -11,6 +12,9 @@ function Q1Form({
         handleIsNext,       // 다음 버튼을 누르면 전송하는 핸들러 (API 데이터 저장)
     }) {
     const countMax = 2;
+    const {
+        q2SelectedList,
+    } = useSurvey();
 
     return (
         <div className={style['Q1-container']}>
@@ -37,7 +41,7 @@ function Q1Form({
                     size="md"
                     content="다음"
                     isActive={isToNext}
-                    onClick={() => handleIsNext("Q2", nowSelectedList)}
+                    onClick={() => handleIsNext("Q2", nowSelectedList, q2SelectedList)}
                 />
             </div>
         </div>
