@@ -1,6 +1,6 @@
 import style from './Q1Form.module.scss';
-import SurveyInfo from './SurveyInfo';
-import Button from './SurveyButton';
+import SurveyInfo from '../feat/SurveyInfo';
+import Button from '../feat/SurveyButton';
 
 function Q1Form({ 
         isError,            // Info의 이미지 에러 출력을 위한 변수 
@@ -18,7 +18,6 @@ function Q1Form({
                 type="Q1"
                 isError={isError}
             />
-            <br />
 
             <div className={style['select-button-container']}>
                 {selectList.map((item) => (
@@ -28,17 +27,19 @@ function Q1Form({
                         size="lg" 
                         content={item.content}
                         isSelected={nowSelectedList.some((selected) => selected.id === item.id)}
-                        onClick={() => handleSelect(item, nowSelectedList, countMax)}
+                        onClick={() => handleSelect(item, countMax)}
                     />
                 ))}
             </div>
-            <Button
-                type="next-action"
-                size="md"
-                content="다음"
-                isActive={isToNext}
-                onClick={() => handleIsNext("Q2", nowSelectedList)}
-            />
+            <div className={style['action-container']}>
+                <Button
+                    type="next-action"
+                    size="md"
+                    content="다음"
+                    isActive={isToNext}
+                    onClick={() => handleIsNext("Q2", nowSelectedList)}
+                />
+            </div>
         </div>
     )
 }
