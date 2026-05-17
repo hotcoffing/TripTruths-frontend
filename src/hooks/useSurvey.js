@@ -10,107 +10,120 @@ export function useSurvey() {
     // 다음 버튼 활성화 변수
     const [isToNext, setIsToNext] = useState(false);
 
-    // 텍스트박스 전용 상태 관리
-    const [text, setText] = useState('');
+    // 텍스트박스 전용 상태 관리 (Q3, Q5 분리)
+    const [q3Text, setQ3Text] = useState('');
+    const [q5Text, setQ5Text] = useState('');
 
-    // 슬라이더 전용 상태 관리
-    const [currentCharge, setCurrentCharge] = useState(0);
+    // 슬라이더 전용 상태 관리 (초기값 10)
+    const [currentCharge, setCurrentCharge] = useState(10);
 
-    // Q1 ~ Q2부분 선택된 버튼 상태 관리
-    const [selectedList, setSelectedList] = useState([]);
+    // Q1 답변 선택 상태 관리
+    const [q1SelectedList, setQ1SelectedList] = useState([]);
+    // Q2 답변 선택 상태 관리
+    const [q2SelectedList, setQ2SelectedList] = useState([]);
 
     // 태그 버튼 선택 상태 관리
     const [selectedTags, setSelectedTags] = useState([]);
 
-    
-
     // 최대 선택 가능 지정 핸들러
-    // count는 최대 선택 가능 개수
-    const handleButtonClick = (Obj, selectedList, count) => {
-        setSelectedList((prev) => {
-            // 이미 선택된 객체인지 id 비교
+    const handleButtonClick = (Obj, count) => {
+        const isQ1 = nowForm === "Q1";
+        const setter = isQ1 ? setQ1SelectedList : setQ2SelectedList;
+
+        setter((prev) => {
             const isAlreadySelected = prev.some((item) => item.id === Obj.id);
             let updatedList;
 
-            // 이미 선택된 경우
             if (isAlreadySelected) {
-                // 이미 있으면 해당 객체의 id를 제외하고 필터링
                 updatedList = prev.filter((item) => item.id !== Obj.id);
-                // 이후 절대 에러가 발생할 수 없으므로 초기화
-                setIsError(false);
             } 
-            // 선택지 않고 새로 선택된 경우
             else {
                 if (prev.length >= count) {
-                    // 버튼을 눌렀을때 최대 개수 제한이 되는 경우 에러 처리후 리턴
                     return prev;
                 } else {
                     updatedList = [...prev, Obj];
                 }
             }
 
-            // 선택 후 최소 충족 조건 만족
-            setIsError(false)
+            setIsError(false);
 
-            // 유효성 검사 및 다음 버튼 활성화 여부 바로 갱신
-            const validCount = updatedList.filter((item) => item.id.startsWith(nowForm)).length;
-            setIsToNext(validCount > 0 && validCount <= count);
+            // 다음 버튼 활성화 여부 판단
+            setIsToNext(updatedList.length > 0);
 
             return updatedList;
         });
-
-        // 버튼을 1개 이상, count개 이하로 선택하였다면 다음 버튼 활성화
-        const vaild = selectedList.filter(
-            // Q1인지 Q2인지 구분해 현재 폼 type과 다른 객체는 필터링
-            (item) => item.id.slice(0, 2) !== nowForm
-        )
-        if (vaild.length > 0 && vaild.length <= count) {
-            setIsToNext(true)
-        }
     };    
 
     // 태그 클릭 핸들러 (다중 선택 가능)
     const handleTagClick = (tag) => {
         setSelectedTags((prev) => {
-            // 이미 선택된 태그인 경우 -> 제거
             if (prev.includes(tag)) {
                 return prev.filter((t) => t !== tag);
             }
-
-            // 새로 선택된 경우 -> 배열 뒤에 추가
             return [...prev, tag];
         });
     };
 
-    // 다음 버튼을 누르는 경우의 데이터 제출 핸들러
-    const handleSubmit = (targetForm, formData) => {
-        // formData를 API로 전송하는 로직 구현 필요
+    // 이전 버튼을 누르는 경우의 핸들러
+    const handlePrev = (targetForm) => {
+        setNowForm(targetForm);
+        setIsError(false);
+        setIsToNext(true);
+    };
 
-        // 유효성 검사 변수 (선택된 버튼의 개수)
-        const validItems = formData.filter((item) => item.id.startsWith(nowForm));
-            
-        // 아무것도 선택하지 않았을 때 에러 발생
-        if (validItems.length === 0) {
-            setIsError(true);
+    // 다음 버튼을 누르는 경우의 데이터 제출 핸들러 (다음 버튼)
+    const handleSubmit = (targetForm, formData) => {
+        // API 전달 구현 필요
+
+        // Q1, Q2 유효성 검사 (버튼 선택형)
+        if (nowForm === "Q1" || nowForm === "Q2") {
+            if (formData.length === 0) {
+                setIsError(true);
+                setIsToNext(false);
+                return;
+            }
+        }
+
+        // sessionStorage에 중간 저장 (추후 구현 고려)
+        sessionStorage.setItem(`survey_${nowForm}`, JSON.stringify(formData));
+
+        // 최종 제출 처리
+        if (targetForm === "SUBMIT") {
+            const finalData = {
+                Q1: JSON.parse(sessionStorage.getItem("survey_Q1") || "[]"),
+                Q2: JSON.parse(sessionStorage.getItem("survey_Q2") || "[]"),
+                Q3: JSON.parse(sessionStorage.getItem("survey_Q3") || "{}"),
+                Q4: JSON.parse(sessionStorage.getItem("survey_Q4") || "0"),
+                Q5: formData // 현재 입력값 (q5Text)
+            };
+            console.log("=== 최종 설문 제출 데이터 ===");
+            console.log(JSON.stringify(finalData, null, 2));
+            alert("제출이 완료되었습니다! 콘솔을 확인해주세요.");
             return;
         }
 
         // 유효하다면 다음 폼으로 이동
-        setIsError(false);
-        setIsToNext(false); // 다음 폼을 위해 비활성화 초기화
         setNowForm(targetForm);
+        setIsError(false);
+        // 현재는 구조상 하드코딩으로 설정 (추후 프로젝트 구조의 사용자 흐름이 변경되지 않는한 무조건 고정)
+        if (q2SelectedList.length === 0) {
+            setIsToNext(false);
+        }
     };
 
     return {
         nowForm,
         isError,
         isToNext,
-        selectedList,
-        text, setText,
+        q1SelectedList,
+        q2SelectedList,
+        q3Text, setQ3Text,
+        q5Text, setQ5Text,
         currentCharge, setCurrentCharge,
         selectedTags,
         handleButtonClick,
         handleTagClick,
+        handlePrev,
         handleSubmit
     };
 }
