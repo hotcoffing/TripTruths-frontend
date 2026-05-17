@@ -1,7 +1,7 @@
 import style from "./SurveyInfo.module.scss";
-import LockImg from "../assets/Lock.svg";
-import PeopleImg from "../assets/People.svg";
-import WarningImg from "../assets/Warning.svg";
+import LockImg from "../../assets/Lock.svg";
+import PeopleImg from "../../assets/People.svg";
+import WarningImg from "../../assets/Warning.svg";
 
 function SurveyInfo({ type, isError = false }) {
     // 정적 텍스트 데이터 정의
@@ -22,7 +22,7 @@ function SurveyInfo({ type, isError = false }) {
     const subDescriptions = {
         Q1: "최대 2개까지 선택 가능합니다.",
         Q2: "최대 3개까지 선택 가능합니다.",
-        Q3: "",
+        Q3: "선택 입력 - 비워두셔도 됩니다",
         Q4: "숙박 + 교통 + 식비 + 활동 모두 포함",
         Q5: "선택 입력 - 비워두셔도 됩니다"
     };
@@ -52,8 +52,10 @@ function SurveyInfo({ type, isError = false }) {
     return (
         <div className={style['info-container']}>
             <img src={imgSrc} alt={type} className={style['img-icon']} />
-            <p className={style['img-description']}>{imgDescription}</p>
-            <br />
+            <p className={[
+                style['img-description'],
+                isError ? style['error'] : ""
+            ].filter(Boolean).join(" ")}>{imgDescription}</p>
             <p className={style['question-description']}>{questionDescription}</p>
             {subDescription && <p className={style['sub-description']}>{subDescription}</p>}
         </div>  

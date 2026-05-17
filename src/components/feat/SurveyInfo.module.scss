@@ -1,14 +1,19 @@
+@use "../../styles/utils" as *;
+
 /* 변수 설정 */
 $text-main-color: #191919;      
 $text-sub-color: #555555;       
+$error-color: #FF4D4D;
 
 .info-container {
     display: flex;
     flex-direction: column;
     align-items: center;     
+    justify-content: center;
     text-align: center;       
     width: 100%;
-    padding: 40px 20px 20px;  
+    flex: 10;
+    padding: 0 vw(20);
     box-sizing: border-box;
     font-family: "Pretendard Variable", sans-serif;
     line-height: 140%;
@@ -16,31 +21,36 @@ $text-sub-color: #555555;
 
     // 아이콘 설정
     .img-icon {
-        width: 24px;            // 이미지 크기는 기획에 맞게 조정 필요
+        width: vw(24);            // 이미지 크기는 기획에 맞게 조정 필요
         height: auto;
         object-fit: contain;
-        margin-bottom: 1vh;     
+        margin-bottom: vh(8);     
     }
 
     // 아이콘 설명
     .img-description {
-        font-size: 12px;
+        font-size: rem(12);
         font-weight: 300;
         color: $text-main-color;
-        margin-bottom: 3vh;     
+        margin-bottom: vh(24);
+
+        &.error {
+            color: $error-color;
+            font-weight: 500;
+        }
     }
 
     // 메인 질문
     .question-description {
-        font-size: 20px;       
+        font-size: rem(20);       
         font-weight: 600;       
         color: $text-main-color;
-        margin-bottom: 1.5vh;      
+        margin-bottom: vh(12);      
     }
 
     // 질문 서브 설명
     .sub-description {
-        font-size: 12px;
+        font-size: rem(12);
         font-weight: 400;       
         letter-spacing: 0%;
         color: $text-sub-color;

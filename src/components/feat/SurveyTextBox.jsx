@@ -1,13 +1,7 @@
 import style from "./SurveyTextBox.module.scss";
 
-function SurveyTextBox({ text, setText, type, onChange }) {
+function SurveyTextBox({ text, setText, placeholder = "", onChange }) {
     const maxLength = 200;
-
-    const placeholder = type === "Q3" 
-        ? '자유롭게 입력해 주세요.' 
-        : type === "Q5" 
-        ? '예시) 취준 중이라 멀리 못 감' 
-        : '';
 
     // 200자 도달 유효성 검사
     const isLimit = text.length >= maxLength;
@@ -29,7 +23,7 @@ function SurveyTextBox({ text, setText, type, onChange }) {
             <textarea 
                 className={[
                     style.textarea,
-                    isLimit ? style.error : "" // 200자 도달 시 에러 스타일 적용 (추후 필요시 사용)
+                    isLimit ? style.error : "" 
                 ].filter(Boolean).join(" ")} 
                 placeholder={placeholder}
                 value={text}
@@ -37,7 +31,7 @@ function SurveyTextBox({ text, setText, type, onChange }) {
             />
             <div className={[
                 style['char-count'],
-                isLimit ? style['error-text'] : "" // 200자 도달 시 텍스트 색상 변경
+                isLimit ? style['error-text'] : "" 
             ].filter(Boolean).join(" ")}>
                 {text.length}/{maxLength}
             </div>
