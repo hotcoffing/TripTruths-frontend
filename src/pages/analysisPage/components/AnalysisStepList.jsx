@@ -15,7 +15,7 @@ const AnalysisStepList = () => {
       setCurrentStep((prev) => {
         if (prev >= ANALYSIS_STEPS.length) {
           clearInterval(interval);
-          navigate('/results');
+          navigate('/results'); // 모든 단계가 완료되면 결과 페이지로 이동
           return prev + 1;
         }
 
