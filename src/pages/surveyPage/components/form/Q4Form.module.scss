@@ -1,6 +1,6 @@
-@use "../../styles/utils" as *;
+@use "@/styles/utils" as *;
 
-.Q1-container {
+.Q4-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,11 +10,10 @@
     padding: 0 vw(20);
     box-sizing: border-box;
 
-    .select-button-container {
+    .slider-area {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: vw(12);                
         width: 100%;
         flex: 67;
     }
@@ -22,11 +21,11 @@
         display: flex;
         align-items: center;
         width: 100%;
+        gap: vw(8);
         flex: 13;
-        
+
         & > button {
             flex: 1;
         }
     }
 }
-

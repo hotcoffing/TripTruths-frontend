@@ -2,15 +2,15 @@
 import style from './SurveyPage.module.scss';
 
 // 컴포넌트
-import SurveyProgressBar from '../components/feat/SurveyProgressBar';
-import Q1Form from '../components/form/Q1Form';
-import Q2Form from '../components/form/Q2Form';
-import Q3Form from '../components/form/Q3Form';
-import Q4Form from '../components/form/Q4Form';
-import Q5Form from '../components/form/Q5Form';
+import SurveyProgressBar from '@/pages/surveyPage/components/feat/SurveyProgressBar';
+import Q1Form from '@/pages/surveyPage/components/form/Q1Form';
+import Q2Form from '@/pages/surveyPage/components/form/Q2Form';
+import Q3Form from '@/pages/surveyPage/components/form/Q3Form';
+import Q4Form from '@/pages/surveyPage/components/form/Q4Form';
+import Q5Form from '@/pages/surveyPage/components/form/Q5Form';
 
 // 커스텀 훅
-import { useSurvey } from '../hooks/useSurvey';
+import { useSurvey } from '@/hooks/useSurvey';
 
 // 정적 데이터
 const allSelectButton = [
