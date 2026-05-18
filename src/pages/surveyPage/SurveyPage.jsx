@@ -59,6 +59,7 @@ function SurveyPage() {
                     isToNext={isToNext}
                     selectList={allSelectButton.filter((item) => item.id.startsWith("Q1"))} 
                     nowSelectedList={q1SelectedList} 
+                    nextSelectedList={q2SelectedList} 
                     handleSelect={handleButtonClick} 
                     handleIsNext={handleSubmit} 
                 />);
