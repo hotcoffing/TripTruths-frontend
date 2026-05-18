@@ -1,29 +1,17 @@
+@use '@/layouts/SurveyLayout' as layout;
+
 .Q1-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0 20px;
-    box-sizing: border-box;
+    @include layout.survey-form-shell;
 
     .select-button-container {
+        @include layout.survey-tier-body;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 12px;                
-        width: 100%;
-        flex: 67;
+        gap: layout.$survey-body-gap;
     }
+
     .action-container {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        flex: 13;
-        
-        & > button {
-            flex: 1;
-        }
+        @include layout.survey-tier-footer;
     }
 }

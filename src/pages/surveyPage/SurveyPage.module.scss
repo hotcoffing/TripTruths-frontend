@@ -1,3 +1,5 @@
+@use '@/layouts/SurveyLayout' as layout;
+
 .page-container {
     display: flex;
     flex-direction: column;
@@ -7,8 +9,15 @@
     overflow: hidden;
 }
 
+.tier-progress {
+    flex-shrink: 0;
+    height: layout.$survey-tier-1-height;
+    margin-bottom: layout.$survey-tier-gap;
+}
+
 .form-wrapper {
-    flex: 90;
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
 }

@@ -2,12 +2,11 @@ import style from './Q5Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
 import Button from '@/pages/surveyPage/components/feat/SurveyButton';
-import RepeatBr from '@/components/RepeatBr';
 
 function Q5Form({ 
         text,               // Q5 텍스트 내용
         setText,            // Q5 텍스트 핸들러
-        handleIsNext,       // 제출 핸들러
+        handleIsNext,       // 다음 버튼 핸들러
         handlePrev,         // 이전 버튼 핸들러
     }) {
 
@@ -16,13 +15,13 @@ function Q5Form({
             <SurveyInfo type="Q5" />
             
             <div className={style['content-area']}>
-                <RepeatBr count={2} />
-                <SurveyTextBox
-                    text={text}
-                    setText={setText}
-                    placeholder="팀원들에게 하고 싶은 말을 자유롭게 적어주세요"
-                />
-                <RepeatBr count={6} />
+                <div className={style['textbox-area']}>
+                    <SurveyTextBox
+                        text={text}
+                        setText={setText}
+                        placeholder="팀원들에게 하고 싶은 말을 자유롭게 적어주세요"
+                    />
+                </div>
             </div>
 
             <div className={style['action-container']}>
@@ -36,7 +35,7 @@ function Q5Form({
                     type="next-action"
                     size="md"
                     content="제출하기"
-                    isActive={true} // 선택 사항이므로 항상 활성화
+                    isActive={true} // 텍스트 입력 여부에 따라 활성화 여부 결정
                     onClick={() => handleIsNext("SUBMIT", text)}
                 />
             </div>

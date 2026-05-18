@@ -51,14 +51,18 @@ function SurveyInfo({ type, isError = false }) {
     // 3. JSX 데이터 바인딩
     return (
         <div className={style['info-container']}>
-            <img src={imgSrc} alt={type} className={style['img-icon']} />
-            <p className={[
-                style['img-description'],
-                isError ? style['error'] : ""
-            ].filter(Boolean).join(" ")}>{imgDescription}</p>
-            <p className={style['question-description']}>{questionDescription}</p>
-            {subDescription && <p className={style['sub-description']}>{subDescription}</p>}
-        </div>  
+            <div className={style['info-image-block']}>
+                <img src={imgSrc} alt={type} className={style['img-icon']} />
+                <p className={[
+                    style['img-description'],
+                    isError ? style['error'] : ""
+                ].filter(Boolean).join(" ")}>{imgDescription}</p>
+            </div>
+            <div className={style['info-question-block']}>
+                <p className={style['question-description']}>{questionDescription}</p>
+                {subDescription && <p className={style['sub-description']}>{subDescription}</p>}
+            </div>
+        </div>
     );
 }
 

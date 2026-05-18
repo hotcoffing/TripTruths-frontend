@@ -106,7 +106,9 @@ function SurveyPage() {
 
     return (
         <div className={style['page-container']}>
-            <SurveyProgressBar step={nowForm} />
+            <div className={style['tier-progress']}>
+                <SurveyProgressBar step={nowForm} />
+            </div>
             <div className={style['form-wrapper']}>
                 {renderForm()}
             </div>

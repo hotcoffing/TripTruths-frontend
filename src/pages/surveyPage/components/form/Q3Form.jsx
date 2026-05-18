@@ -2,7 +2,6 @@ import style from './Q3Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
 import Button from '@/pages/surveyPage/components/feat/SurveyButton';
-import RepeatBr from '@/components/RepeatBr';
 
 function Q3Form({ 
         text,               // 텍스트 박스 내용
@@ -19,7 +18,6 @@ function Q3Form({
             <SurveyInfo type="Q3" />
             
             <div className={style['content-area']}>
-                <RepeatBr count={2} />
                 <SurveyTextBox 
                     text={text}
                     setText={setText}
@@ -41,8 +39,6 @@ function Q3Form({
                         ))}
                     </div>
                 </div>
-
-                <RepeatBr count={1} />
             </div>
 
             <div className={style['action-container']}>
