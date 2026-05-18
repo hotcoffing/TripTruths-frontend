@@ -1,27 +1,25 @@
-@use "@/styles/utils" as *;
-
 .progress-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     flex: 10;
-    gap: vw(10);
-    padding: 0 vw(20);
+    gap: 10px;
+    padding: 0 20px;
     box-sizing: border-box;
 
     .progress-segment {
-        width: vw(10);
-        height: vw(10);
+        width: 10px;
+        height: 10px;
         background-color: #F2F2F2;
         border-radius: 50%;
         transition: all 0.3s ease;
 
         &.active {
-            width: vw(35);
-            height: vw(10);
+            width: 35px;
+            height: 10px;
             background-color: #FF822E;
-            border-radius: vw(10);
+            border-radius: 10px;
         }
     }
 }

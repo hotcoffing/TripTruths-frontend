@@ -1,5 +1,3 @@
-@use "@/styles/utils" as *;
-
 // figma 정의 스타일
 $primary-orange: #FF822E;
 $light-orange: #FFD9C0;
@@ -21,9 +19,9 @@ $gray-text: #848B9C;
 
     // 1. 선택형 버튼 (Q1, Q2 스타일)
     &.button-select {
-        border-radius: vw(15);
+        border-radius: 15px;
 
-        font-size: rem(18);
+        font-size: 18px;
         font-weight: 600;
 
         &.clicked {
@@ -35,9 +33,9 @@ $gray-text: #848B9C;
 
     // 2. 태그형 버튼 (Q3 스타일)
     &.button-tag {
-        border-radius: vw(40);
+        border-radius: 40px;
 
-        font-size: rem(12);
+        font-size: 12px;
         font-weight: 500;
         
         &.clicked {
@@ -49,9 +47,9 @@ $gray-text: #848B9C;
 
     // 3. 다음 액션 버튼 
     &.button-next-action {
-        border-radius: vw(30);
+        border-radius: 30px;
 
-        font-size: rem(18);
+        font-size: 18px;
         font-weight: 600;
 
         // '다음' 혹은 '제출하기'가 활성화된 상태
@@ -67,9 +65,9 @@ $gray-text: #848B9C;
 
     // 4. 이전 액션 버튼
     &.button-prev-action {
-        border-radius: vw(30);
+        border-radius: 30px;
 
-        font-size: rem(18);
+        font-size: 18px;
         font-weight: 600;
 
         background-color: $gray-background;
@@ -78,18 +76,18 @@ $gray-text: #848B9C;
     // 버튼 크기 조절 (추후 vh 단위로 변경 필요)
     &.button-lg {
         width: 100%;
-        height: vh(70);
+        height: 70px;
     }
 
     &.button-md {
         width: 100%;
-        height: vh(56);
+        height: 56px;
     }
 
     &.button-sm {
         display: inline-flex;
-        padding: 0 vw(16);
+        padding: 0 16px;
         width: auto;
-        height: vh(34);
+        height: 34px;
     }
 }
