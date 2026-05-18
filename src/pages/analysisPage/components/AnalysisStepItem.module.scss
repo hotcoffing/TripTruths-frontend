@@ -32,7 +32,8 @@
   align-items: center;
   position: relative;
   gap: 16px;
-  width: 312px;
+  width: 100%;
+  max-width: 312px;
   transition:
     transform 240ms ease,
     opacity 240ms ease;
@@ -67,7 +68,8 @@
   .analysis-step-item-text {
     display: flex;
     flex-direction: column;
-    width: 180px;
+    flex: 1;
+    min-width: 0;
 
     gap: 6px;
 
