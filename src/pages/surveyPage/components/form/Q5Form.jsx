@@ -1,8 +1,8 @@
 import style from './Q5Form.module.scss';
-import SurveyInfo from '../feat/SurveyInfo';
-import SurveyTextBox from '../feat/SurveyTextBox';
-import Button from '../feat/SurveyButton';
-import RepeatBr from '../RepeatBr';
+import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
+import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
+import Button from '@/pages/surveyPage/components/feat/SurveyButton';
+import RepeatBr from '@/components/RepeatBr';
 
 function Q5Form({ 
         text,               // Q5 텍스트 내용

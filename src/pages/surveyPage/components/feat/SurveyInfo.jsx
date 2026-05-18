@@ -1,7 +1,7 @@
 import style from "./SurveyInfo.module.scss";
-import LockImg from "../../assets/Lock.svg";
-import PeopleImg from "../../assets/People.svg";
-import WarningImg from "../../assets/Warning.svg";
+import LockImg from "@/assets/Lock.svg";
+import PeopleImg from "@/assets/People.svg";
+import WarningImg from "@/assets/Warning.svg";
 
 function SurveyInfo({ type, isError = false }) {
     // 정적 텍스트 데이터 정의
