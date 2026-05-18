@@ -13,25 +13,7 @@ import Q5Form from '@/pages/surveyPage/components/form/Q5Form';
 import { useSurvey } from '@/hooks/useSurvey';
 
 // 정적 데이터
-const allSelectButton = [
-    { id: "Q1_1", content: "🏃 엑티비티" },
-    { id: "Q1_2", content: "🌴 휴양" },
-    { id: "Q1_3", content: "🏛 문화/관광" },
-    { id: "Q1_4", content: "🍽️ 맛집" },
-    { id: "Q1_5", content: "📸 감성/사진" },
-    { id: "Q1_6", content: "🎡 놀거리" },
-    { id: "Q2_1", content: "🌊 바다" },
-    { id: "Q2_2", content: "⛰️ 산/자연" },
-    { id: "Q2_3", content: "🏙️ 도시 탐험" },
-    { id: "Q2_4", content: "☕ 카페 투어" },
-    { id: "Q2_5", content: "🛍️ 쇼핑" },
-    { id: "Q2_6", content: "🌃 야경" },
-];
-
-const tags = [
-    "새벽 출발", "비행기", "등산", "과음", 
-    "멀미", "매운 음식", "벌레", "장거리 이동"
-];
+import { SURVEY_TAGS, getSurveySelectOptionsByQuestion } from '@/constants/surveyOptions';
 
 function SurveyPage() {
     const {
@@ -57,7 +39,7 @@ function SurveyPage() {
                 return (<Q1Form
                     isError={isError} 
                     isToNext={isToNext}
-                    selectList={allSelectButton.filter((item) => item.id.startsWith("Q1"))} 
+                    selectList={getSurveySelectOptionsByQuestion('Q1')} 
                     nowSelectedList={q1SelectedList} 
                     nextSelectedList={q2SelectedList} 
                     handleSelect={handleButtonClick} 
@@ -67,7 +49,7 @@ function SurveyPage() {
                 return (<Q2Form
                     isError={isError} 
                     isToNext={isToNext}
-                    selectList={allSelectButton.filter((item) => item.id.startsWith("Q2"))} 
+                    selectList={getSurveySelectOptionsByQuestion('Q2')} 
                     nowSelectedList={q2SelectedList} 
                     handleSelect={handleButtonClick} 
                     handleIsNext={handleSubmit} 
@@ -77,7 +59,7 @@ function SurveyPage() {
                 return (<Q3Form
                     text={q3Text}
                     setText={setQ3Text}
-                    tags={tags}
+                    tags={SURVEY_TAGS}
                     selectedTags={selectedTags}
                     handleTagClick={handleTagClick}
                     handleIsNext={handleSubmit}
