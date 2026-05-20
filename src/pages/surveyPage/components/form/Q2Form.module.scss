@@ -7,7 +7,7 @@
         @include layout.survey-tier-body;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: safe center;
         gap: layout.$survey-body-gap;
     }
 
