@@ -64,7 +64,7 @@ $label-color: #848B9C;
             justify-content: space-between;
             width: 100%;
             padding: 0 14px;        // 눈금자 양 끝이 슬라이더 핸들과 겹치지 않도록 패딩 조절
-            margin-top: -17px;      // 슬라이더와 겹치도록 상단 마진 조절
+            margin-top: -15px;      // 슬라이더와 겹치도록 상단 마진 조절
             pointer-events: none;   // 눈금자 클릭 방지
             z-index: 5;             // 슬라이더보다 아래에 오도록 z-index 조절
 
