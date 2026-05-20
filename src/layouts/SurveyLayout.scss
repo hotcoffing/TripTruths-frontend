@@ -18,6 +18,7 @@ $survey-sub-font-size: 12px;
     padding: 0 $survey-padding-x;
     box-sizing: border-box;
     gap: $survey-tier-gap;
+    overflow-y: auto;
 }
 
 @mixin survey-tier-body {

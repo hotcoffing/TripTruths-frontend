@@ -5,8 +5,7 @@
 
     .content-area {
         @include layout.survey-tier-body;
-        display: flex;
-        flex-direction: column;
+        overflow-y: auto;
         gap: 16px;
         padding-top: 8px;
         padding-bottom: 8px;
