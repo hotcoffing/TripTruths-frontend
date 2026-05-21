@@ -1,7 +1,7 @@
 import style from './Q1Form.module.scss';
-import SurveyInfo from '../feat/SurveyInfo';
-import Button from '../feat/SurveyButton';
-import { useSurvey } from '../../hooks/useSurvey';
+import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
+import Button from '@/pages/surveyPage/components/feat/SurveyButton';
+import { useSurvey } from '@/hooks/useSurvey';
 
 function Q1Form({ 
         isError,            // Info의 이미지 에러 출력을 위한 변수 
