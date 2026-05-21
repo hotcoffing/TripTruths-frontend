@@ -2,7 +2,7 @@
   width: 100%;
   height: 60px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 36px;
   font-size: 18px;
   font-weight: 600;
   line-height: 1.4;
@@ -24,7 +24,8 @@
 }
 
 .button--muted {
-  background: #f2f2f2;
+  border: 2px solid var(--color-border);
+  background: #ffffff;
   color: #848b9c;
 }
 
