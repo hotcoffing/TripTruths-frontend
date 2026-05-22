@@ -1,4 +1,4 @@
-import style from "./GroupPage.module.scss"
+import style from "./GroupPage.module.scss";
 import GroupHeader from "./components/GroupHeader";
 import GroupInvite from "./components/GroupInvite";
 import GroupInputProgress from "./components/GroupInputProgress";
@@ -15,23 +15,44 @@ function shareKakao() {
 
 }
 
-// TODO: 서버 연동 완료 후 삭제
-const MOCK_GROUP_INFO = {
-    name: "제주도 여행",
-    trip_length: 3,
-    start_date: "2026-06-01",
-    end_date: "2026-06-03",
-    status: "SURVEY",
-};
+// API 응답이 group_member 배열 또는 trip_group + 목록 필드일 수 있음
+function extractMemberList(data) {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.group_members)) return data.group_members;
+    if (Array.isArray(data?.members)) return data.members;
+    if (Array.isArray(data?.member_list)) return data.member_list;
+    return null;
+}
 
-const MOCK_MEMBER_LIST = [
-    { id: 1, nickname: "방장님", role: "leader", is_survey_complete: true },
-    { id: 2, nickname: "민수", role: "member", is_survey_complete: true },
-    { id: 3, nickname: "지연", role: "member", is_survey_complete: false },
-];
+function readStoredJson(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (raw == null) return null;
+        return JSON.parse(raw);
+    } catch {
+        console.error(`localStorage "${key}" JSON 파싱에 실패했습니다.`);
+        return null;
+    }
+}
 
-// TODO: 서버 연동 완료 후 false로 변경
-const IS_MOCK_MODE = true;
+// 유효성 검사 함수 (API 응답 형식 대응)
+function isMemberSurveyCompleted(member) {
+    if (member.is_survey_completed === true) {
+        return true;
+    }
+    if (member.isSurveyCompleted === true) {
+        return true;
+    }
+    return false;
+}
+
+function extractGroupInfo(data) {
+    if (!data || Array.isArray(data)) return null;
+    if (data.name != null || data.trip_length != null || data.status != null) {
+        return data;
+    }
+    return null;
+}
 
 function GroupPage() {
     // 정적 텍스트 데이터 
@@ -44,9 +65,9 @@ function GroupPage() {
     // 가져올 목록 : 현재 사용자 정보, 초대코드
 
     // group_member 테이블의 객체 전체를 로컬 스토리지에서 가져옴
-    const user = JSON.parse(localStorage.getItem("user"));       
+    const user = readStoredJson("user");
     // 그룹 초대 코드도 로컬 스토리지에서 가져옴
-    const inviteCode = JSON.parse(localStorage.getItem("inviteCode"));       
+    const inviteCode = readStoredJson("inviteCode");
 
     // group_member 테이블 내부의 그룹 ID 외래키
     // ?. 로 안전하게 데이터 가져오기
@@ -54,29 +75,16 @@ function GroupPage() {
 
     // API 데이터 가져오기
     // 가져올 목록 : 그룹 정보, 사용자 목록 정보 
-    // 현재는 임시 데이터 사용
-    const [groupInfo, setGroupInfo] = useState(MOCK_GROUP_INFO);
-    const [memberList, setMemberList] = useState(MOCK_MEMBER_LIST);
-
-    const allSurveyCompleted =
-        MOCK_MEMBER_LIST.length ===
-        MOCK_MEMBER_LIST.filter((member) => member.is_survey_complete).length;
+    const [groupInfo, setGroupInfo] = useState(null);
+    const [memberList, setMemberList] = useState(null);
 
     // 하단 버튼 활성화 상태
-    const [isToNext, setIsToNext] = useState(
-        allSurveyCompleted && user?.role === "leader"
-    );
+    const [isToNext, setIsToNext] = useState(false);
 
     // 하단 버튼 텍스트 데이터 상태
-    const [nextButtonText, setNextButtonText] = useState(() => {
-        if (!allSurveyCompleted) return groupNotReadyText;
-        if (user?.role === "leader") return groupLeaderReadyText;
-        return groupMemberReadyText;
-    });
+    const [nextButtonText, setNextButtonText] = useState(groupNotReadyText);
 
     useEffect(() => {
-        if (IS_MOCK_MODE) return;
-
         // 벡엔드 요구사항 : 그룹 상태가 'VOTING'이 되면 더 이상 호출 X
         if (groupInfo && groupInfo.status === 'VOTING') {
             console.log('그룹 상태가 VOTING이 되어 폴링을 중단합니다.');
@@ -98,15 +106,31 @@ function GroupPage() {
                     instance.get(`/api/v1/trip-groups/${userGroupId}`)
                 ]);
 
-                // 받아온 데이터 상태 저장
-                setGroupInfo(groupResponse.data);
-                setMemberList(memberListResponse.data);
+                const inviteData = groupResponse.data;
+                const groupDetailData = memberListResponse.data;
 
-                // 임시 데이터 저장
-                const freshMemberList = memberListResponse.data;
+                const parsedGroupInfo =
+                    extractGroupInfo(inviteData) ?? extractGroupInfo(groupDetailData);
+                const parsedMemberList =
+                    extractMemberList(groupDetailData) ?? extractMemberList(inviteData);
+
+                if (!parsedGroupInfo || !parsedMemberList) {
+                    console.error('그룹/멤버 응답 형식이 올바르지 않습니다.', {
+                        inviteData,
+                        groupDetailData,
+                    });
+                    setNextButtonText(groupErrorText);
+                    return;
+                }
+
+                // 받아온 데이터 상태 저장
+                setGroupInfo(parsedGroupInfo);
+                setMemberList(parsedMemberList);
+
+                const freshMemberList = parsedMemberList;
 
                 const allSurveyCompleted = freshMemberList.length === freshMemberList.filter(
-                    (member) => member.is_survey_complete
+                    (member) => isMemberSurveyCompleted(member)
                 ).length;
 
                 // 버튼 상태 결정
@@ -114,7 +138,7 @@ function GroupPage() {
                     // 아직 설문 안 끝난 사용자가 있을 때
                     setIsToNext(false);
                     setNextButtonText(groupNotReadyText);
-                } else if (user?.role === 'leader') {
+                } else if (user?.role === "LEADER") {
                     // 설문이 다 끝났고, 본인이 방장일 때
                     setIsToNext(true);
                     setNextButtonText(groupLeaderReadyText);
@@ -138,8 +162,14 @@ function GroupPage() {
         }
     }, [groupInfo]);
 
-    if (!groupInfo || !memberList) {
-        return <div className={style['group-container']}>데이터를 불러오는 중입니다...</div>;
+    if (!groupInfo || !Array.isArray(memberList)) {
+        return (
+            <div className={style['group-container']}>
+                {nextButtonText === groupErrorText
+                    ? nextButtonText
+                    : "데이터를 불러오는 중입니다..."}
+            </div>
+        );
     }
 
     return (
@@ -168,7 +198,10 @@ function GroupPage() {
                     size="md"
                     content={nextButtonText}
                     isActive={isToNext}
-                    onClick={() => handleIsNext("Q2", nowSelectedList, nextSelectedList)}
+                    onClick={() => {
+                        if (!isToNext) return;
+                        console.log("AI 분석 시작");
+                    }}
                 />
             </div>
         </div>
