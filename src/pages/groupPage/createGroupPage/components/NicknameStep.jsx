@@ -1,7 +1,12 @@
 import InputField from '@/components/common/inputField/InputField';
 import styles from './NicknameStep.module.scss';
 
-const NicknameStep = ({ nickname, setNickname }) => {
+const NicknameStep = ({
+  nickname,
+  setNickname,
+  nicknameVariant = 'default',
+  nicknameMessage = '',
+}) => {
   return (
     <>
       <h1 className={styles['create-group-title']}>Trip Truth</h1>
@@ -14,10 +19,10 @@ const NicknameStep = ({ nickname, setNickname }) => {
       <div className={styles['create-group-input']}>
         <InputField
           value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          onChange={(event) => setNickname(event.target.value)}
           placeholder="닉네임을 입력해 주세요"
-          variant="default"
-          message="2~10자 한글/영문만 입력 가능합니다."
+          variant={nicknameVariant}
+          message={nicknameMessage}
         />
       </div>
     </>

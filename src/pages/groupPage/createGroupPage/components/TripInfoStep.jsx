@@ -1,10 +1,18 @@
 import InputField from '@/components/common/inputField/InputField';
-import styles from './TripInfoStep.module.scss';
 import { CalendarSvg, PreviousStepSvg } from '@/assets/svg/CreateGroupSvgs';
+import styles from './TripInfoStep.module.scss';
+import { PERIODS_NIGHTS } from '@/constants/periodNights';
 
-const periodOptions = ['당일치기', '1박 2일', '2박 3일', '3박 4일'];
-
-const TripInfoStep = () => {
+const TripInfoStep = ({
+  tripName,
+  setTripName,
+  tripNameVariant = 'default',
+  tripNameMessage = '',
+  tripPeriod,
+  setTripPeriod,
+  travelDate,
+  onOpenCalendar,
+}) => {
   return (
     <>
       <div
@@ -22,9 +30,11 @@ const TripInfoStep = () => {
 
       <div className={styles['create-group-input']}>
         <InputField
+          value={tripName}
+          onChange={(event) => setTripName(event.target.value)}
           placeholder="그룹 이름을 입력해 주세요"
-          variant="default"
-          message="2~10자 한글만 입력 가능합니다."
+          variant={tripNameVariant}
+          message={tripNameMessage}
         />
       </div>
 
@@ -33,9 +43,19 @@ const TripInfoStep = () => {
           <h3>여행 기간</h3>
           <p>현재는 최대 3박 4일 여행까지만 추천을 지원하고 있어요</p>
         </div>
+
         <div className={styles['create-group-period-options']}>
-          {periodOptions.map((option) => (
-            <div key={option}>{option}</div>
+          {PERIODS_NIGHTS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={`${styles['period-option']} ${
+                tripPeriod === option ? styles['period-option--selected'] : ''
+              }`}
+              onClick={() => setTripPeriod(option)}
+            >
+              {option}
+            </button>
           ))}
         </div>
       </div>
@@ -45,9 +65,12 @@ const TripInfoStep = () => {
           여행 기간 <span>(선택)</span>
         </h4>
         <InputField
+          value={travelDate}
           placeholder="YYYY-MM-DD"
           variant="default"
           icon={<CalendarSvg />}
+          readOnly
+          onClick={onOpenCalendar}
         />
       </div>
     </>
