@@ -25,6 +25,7 @@ const SuccessIcon = () => {
 const InputField = ({
   value = '',
   onChange,
+  onClick,
   placeholder = '',
   name,
   id,
@@ -33,11 +34,17 @@ const InputField = ({
   message = '',
   icon = null,
   disabled = false,
+  readOnly = false,
 }) => {
+  const isClickable = Boolean(onClick) && !disabled;
+
   const fieldClassName = [
     styles['input-field'],
     styles[`input-field--${variant}`],
-  ].join(' ');
+    isClickable ? styles['input-field--clickable'] : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const trailingIcon = icon ?? (variant === 'success' ? <SuccessIcon /> : null);
 
@@ -56,16 +63,21 @@ const InputField = ({
 
   return (
     <div className={styles['input-field-group']}>
-      <div className={fieldClassName}>
+      <div
+        className={fieldClassName}
+        onClick={onClick}
+      >
         <input
           id={id}
           name={name}
           type={type}
           value={value}
           onChange={onChange}
+          onClick={onClick}
           placeholder={placeholder}
           className={inputClassName}
           disabled={disabled}
+          readOnly={readOnly}
         />
         {trailingIcon ? (
           <div className={styles['input-field__icon']}>{trailingIcon}</div>

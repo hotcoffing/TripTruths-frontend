@@ -13,6 +13,10 @@
   background: var(--color-bg);
 }
 
+.input-field--clickable {
+  cursor: pointer;
+}
+
 .input-field--default {
   border-color: var(--color-border);
   background: var(--color-bg);
@@ -76,8 +80,11 @@
   cursor: not-allowed;
 }
 
+.input-field__input:read-only {
+  cursor: inherit;
+}
+
 .input-field__message {
-  text-align: start;
   margin-top: 6px;
   padding-left: 10px;
   color: var(--color-text-muted);
@@ -85,6 +92,7 @@
   font-weight: var(--font-weight-regular);
   line-height: 1.4;
   letter-spacing: 0.024em;
+  text-align: start;
 }
 
 .input-field__message--default,
