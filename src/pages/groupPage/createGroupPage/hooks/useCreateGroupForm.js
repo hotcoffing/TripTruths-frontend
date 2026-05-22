@@ -23,10 +23,6 @@ import {
 export function useCreateGroupForm() {
   // 폼 payload 전체를 단일 상태로 관리합니다.
   const [form, setForm] = useState(getInitialFormState);
-  // 캘린더 UI에서 사용하는 날짜 범위를 별도로 유지합니다.
-  const [travelRange, setTravelRange] = useState(() =>
-    createTravelRangeFromForm(getInitialFormState()),
-  );
   // 저장된 날짜가 있으면 해당 월부터 캘린더를 열 수 있게 초기 월을 맞춥니다.
   const [calendarMonth, setCalendarMonth] = useState(() => {
     const initialTravelRange = createTravelRangeFromForm(getInitialFormState());
@@ -51,6 +47,8 @@ export function useCreateGroupForm() {
   // 서버에 보내는 tripLength 값을 화면용 기간 문자열로 되돌립니다.
   const tripPeriod =
     PERIOD_BY_TRIP_LENGTH[form.tripLength] ?? DEFAULT_TRIP_PERIOD;
+  // 캘린더와 입력창에서 사용할 날짜 범위는 form 값으로부터 계산합니다.
+  const travelRange = createTravelRangeFromForm(form);
 
   // 1단계 닉네임 입력을 payload에 반영합니다.
   const handleChangeNickname = (value) => {
@@ -87,17 +85,12 @@ export function useCreateGroupForm() {
         endDate: formatDateValue(nextRange?.to ?? nextRange?.from),
       };
     });
-
-    setTravelRange((currentRange) =>
-      getTravelRange(currentRange?.from, nextTripPeriod),
-    );
   };
 
   // 캘린더에서 선택한 날짜를 payload와 화면 상태에 동시에 반영합니다.
   const handleSelectDate = (date) => {
     const nextRange = getTravelRange(date, tripPeriod);
 
-    setTravelRange(nextRange);
     setForm((currentForm) => ({
       ...currentForm,
       startDate: formatDateValue(nextRange?.from),

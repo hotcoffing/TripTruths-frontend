@@ -4,13 +4,13 @@ import Button from '@/components/common/button/Button';
 import styles from './CalendarBottomSheet.module.scss';
 
 const WEEK_DAYS = [
-  '\uC77C',
-  '\uC6D4',
-  '\uD654',
-  '\uC218',
-  '\uBAA9',
-  '\uAE08',
-  '\uD1A0',
+  '일',
+  '월',
+  '화',
+  '수',
+  '목',
+  '금',
+  '토',
 ];
 
 const ArrowLeftIcon = () => {
@@ -56,7 +56,7 @@ const ArrowRightIcon = () => {
 };
 
 const formatMonthLabel = (month) => {
-  return `${month.getFullYear()}\uB144 ${month.getMonth() + 1}\uC6D4`;
+  return `${month.getFullYear()}년 ${month.getMonth() + 1}월`;
 };
 
 const formatWeekdayName = (date) => {
@@ -122,9 +122,7 @@ const CalendarBottomSheet = ({
       >
         <div className={styles.header}>
           <p className={styles.title}>
-            {
-              '\uC5EC\uD589 \uAE30\uAC04\uC744 \uC120\uD0DD\uD574 \uC8FC\uC138\uC694'
-            }
+            여행 기간을 선택해 주세요
           </p>
 
           <div className={styles['month-row']}>
@@ -147,7 +145,7 @@ const CalendarBottomSheet = ({
                     new Date(month.getFullYear(), month.getMonth() - 1, 1),
                   );
                 }}
-                aria-label={'\uC774\uC804 \uB2EC'}
+                aria-label="이전 달"
                 disabled={!canGoToPreviousMonth}
               >
                 <ArrowLeftIcon />
@@ -160,7 +158,7 @@ const CalendarBottomSheet = ({
                     new Date(month.getFullYear(), month.getMonth() + 1, 1),
                   )
                 }
-                aria-label={'\uB2E4\uC74C \uB2EC'}
+                aria-label="다음 달"
               >
                 <ArrowRightIcon />
               </button>
@@ -209,7 +207,7 @@ const CalendarBottomSheet = ({
             disabled={!selectedRange?.from}
             onClick={onConfirm}
           >
-            {'\uB2E4\uC74C'}
+            다음
           </Button>
         </div>
       </section>
