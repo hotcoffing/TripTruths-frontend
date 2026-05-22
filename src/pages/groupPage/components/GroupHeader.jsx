@@ -1,5 +1,13 @@
 import style from "./GroupHeader.module.scss"
 
+// trip_group.trip_length ENUM → 표시 문구 (triptruth.sql)
+const TRIP_LENGTH_LABELS = {
+    DAY_TRIP: "당일",
+    ONE_NIGHT: "1박 2일",
+    TWO_NIGHTS: "2박 3일",
+    THREE_NIGHTS_PLUS: "3박 4일 이상",
+};
+
 // 날짜 객체를 'YYYY.MM.DD' 형식으로 변환해주는 헬퍼 함수
 const formatDate = (dateInput) => {
     if (!dateInput) return "";
@@ -17,12 +25,29 @@ const formatDate = (dateInput) => {
 
 function GroupHeader({groupName, tripLength, startDate = null, endDate = null}) {
     const validDuration = startDate != null && endDate != null;
-    const duration = validDuration ? `/ ${formatDate(startDate)} ~ ${formatDate(endDate)}` : "";
-    
+
+    let duration = "";
+    if (validDuration) {
+        duration = `/ ${formatDate(startDate)} ~ ${formatDate(endDate)}`;
+    }
+
+    let tripLengthLabel = "일정 미정";
+    if (tripLength != null && TRIP_LENGTH_LABELS[tripLength]) {
+        tripLengthLabel = TRIP_LENGTH_LABELS[tripLength];
+    } else if (tripLength === 2 || tripLength === "2") {
+        // API가 숫자 일수만 내려주는 경우 (레거시)
+        tripLengthLabel = "1박 2일";
+    }
+
+    let displayGroupName = "그룹";
+    if (groupName != null && groupName !== "") {
+        displayGroupName = groupName;
+    }
+
     return (
         <div className={style['header-container']}>
-            <p className={style['header-name']}>{groupName}</p>
-            <p className={style['header-duration']}>{tripLength - 1}박 {tripLength}일 {duration}</p>
+            <p className={style['header-name']}>{displayGroupName}</p>
+            <p className={style['header-duration']}>{tripLengthLabel} {duration}</p>
         </div>
     );
 }
