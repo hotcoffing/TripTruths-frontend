@@ -4,6 +4,7 @@ import MainPage from '@/pages/MainPage';
 import AnalysisPage from '@/pages/analysisPage/AnalysisPage';
 import ResultsPage from '@/pages/resultsPage/ResultsPage';
 import SurveyPage from '@/pages/surveyPage/SurveyPage';
+import GroupPage from '@/pages/groupPage/GroupPage';
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,14 @@ const router = createBrowserRouter([
         path: '/results',
         element: <ResultsPage />,
       },
-      { path: '/survey', element: <SurveyPage /> },
+      { 
+        path: '/survey', 
+        element: <SurveyPage /> 
+      },
+      {
+        path: '/group',
+        element: <GroupPage />
+      }
     ],
   },
 ]);
