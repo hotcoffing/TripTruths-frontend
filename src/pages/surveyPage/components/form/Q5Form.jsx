@@ -1,7 +1,7 @@
 import style from './Q5Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
-import Button from '@/pages/surveyPage/components/feat/SurveyButton';
+import Button from '@/components/common/Button';
 
 function Q5Form({ 
         text,               // Q5 텍스트 내용

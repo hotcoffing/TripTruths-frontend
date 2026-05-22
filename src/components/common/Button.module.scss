@@ -5,6 +5,18 @@ $gray-border: #E2E2E2;
 $gray-background: #F2F2F2;
 $gray-text: #848B9C;
 
+// 버튼 아이콘 스타일
+.button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    // 이미지 비율 깨짐 방지 및 기본 크기 지정
+    width: 20px;   
+    height: 20px;
+    object-fit: contain;
+}
+
 .button {
     display: flex;
     align-items: center;
@@ -73,7 +85,19 @@ $gray-text: #848B9C;
         background-color: $gray-background;
     }
 
-    // 버튼 크기 조절 (추후 vh 단위로 변경 필요)
+    // 5. 응답 입력 버튼
+    &.button-input-response {
+        border-radius: 20px;
+
+        background-color: $primary-orange;
+        color: white;
+
+        font-size: 10px;
+    }
+
+
+
+    // survey 부분 버튼 크기 조절
     &.button-lg {
         width: 100%;
         height: 70px;
@@ -86,11 +110,15 @@ $gray-text: #848B9C;
         min-height: 56px;
     }
 
-    &.button-sm {
+    &.button-auto-sm {
         display: inline-flex;
         padding: 0 16px;
         width: auto;
         height: 34px;
         min-height: 34px;
+    }
+
+    &.button-fixed-sm {
+        display: inline-flex;
     }
 }

@@ -1,7 +1,7 @@
 import style from './Q3Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
-import Button from '@/pages/surveyPage/components/feat/SurveyButton';
+import Button from '@/components/common/Button';
 
 function Q3Form({ 
         text,               // 텍스트 박스 내용
@@ -31,7 +31,7 @@ function Q3Form({
                             <Button
                                 key={tag}
                                 type="tag"
-                                size="sm"
+                                size="auto-sm"
                                 content={tag}
                                 isSelected={selectedTags.includes(tag)}
                                 onClick={() => handleTagClick(tag)}

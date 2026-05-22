@@ -1,7 +1,7 @@
 import style from './Q4Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveySlider from '@/pages/surveyPage/components/feat/SurveySlider';
-import Button from '@/pages/surveyPage/components/feat/SurveyButton';
+import Button from '@/components/common/Button';
 
 function Q4Form({ 
         currentCharge,      // 슬라이더 현재 값
