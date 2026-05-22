@@ -1,9 +1,22 @@
-// figma 정의 스타일
-$primary-orange: #FF822E;
+// figma 정의 스타일 (MCP: 부기텐_트립트루스 복사본 group 페이지)
+$color-text-primary: #191919;
+$color-text-on-primary: #FCFDFD;
+$color-text-sub: #848B9C;
+$color-border-default: #E2E2E2;
+$color-bg-page: #FCFDFD;
+$color-primary: #FF822E;
+$color-primary-light-bg: #FFF2EA;
+$color-kakao: #FFE812;
+$color-error: #FF5252;
+$color-white: #FFFFFF;
+$color-gray-background: #F2F2F2;
+
+// 기존 변수명 호환 (survey 등 다른 페이지)
+$primary-orange: $color-primary;
 $light-orange: #FFD9C0;
-$gray-border: #E2E2E2;
-$gray-background: #F2F2F2;
-$gray-text: #848B9C;
+$gray-border: $color-border-default;
+$gray-background: $color-gray-background;
+$gray-text: $color-text-sub;
 
 // 버튼 아이콘 스타일
 .button-icon {
@@ -59,19 +72,29 @@ $gray-text: #848B9C;
 
     // 3. 다음 액션 버튼 
     &.button-next-action {
-        border-radius: 30px;
+        border-radius: 36px;
+        border-color: $color-border-default;
+        background-color: $color-white;
+        color: $color-text-sub;
 
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
+        letter-spacing: 0.384px;
 
         // '다음' 혹은 '제출하기'가 활성화된 상태
         &.active {
-            background-color: $primary-orange;
-            color: white;
+            background-color: $color-primary;
+            border-color: $color-primary;
+            color: $color-text-on-primary;
         }
 
         &:active {
             transform: scale(0.97); // 터치 시 눌리는 효과
+        }
+
+        &.button-md {
+            height: 60px;
+            min-height: 60px;
         }
     }
 
@@ -85,14 +108,32 @@ $gray-text: #848B9C;
         background-color: $gray-background;
     }
 
-    // 5. 응답 입력 버튼
-    &.button-input-response {
-        border-radius: 20px;
+    // 5. 카카오 공유 버튼 
+    &.button-kakao {
+        border-radius: 12px;
+        background-color: $color-kakao;
+        border-color: $color-kakao;
+        color: $color-text-primary;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.336px;
 
-        background-color: $primary-orange;
-        color: white;
+        &.button-md {
+            height: 58px;
+            min-height: 58px;
+        }
+    }
+
+    // 6. 응답 입력 버튼
+    &.button-input-response {
+        border-radius: 12px;
+        border-color: $color-primary;
+        background-color: $color-primary;
+        color: $color-text-on-primary;
 
         font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.24px;
     }
 
 
