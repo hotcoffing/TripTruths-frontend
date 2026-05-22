@@ -23,7 +23,7 @@ function GroupInvite({handleCopyLink, handleKakao}) {
                 onClick={() => handleCopyLink()}
             />
             <Button 
-                type="select" 
+                type="kakao" 
                 size="md" 
                 imgSrc={KakaoImg} 
                 content={kakaoShareText} 
