@@ -1,65 +1,51 @@
-import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useCreateGroupForm } from '@/pages/groupPage/createGroupPage/hooks/useCreateGroupForm';
+import { formatTravelDateRange } from '@/pages/groupPage/createGroupPage/utils/travelDate';
 import Button from '@/components/common/button/Button';
 import CalendarBottomSheet from '@/components/common/calendarBottomSheet/CalendarBottomSheet';
-import {
-  formatTravelDateRange,
-  getCurrentMonthStart,
-  getTravelRange,
-} from '@/utils/travelDate';
-import styles from './CreateGroupPage.module.scss';
 import NicknameStep from './components/NicknameStep';
 import TripInfoStep from './components/TripInfoStep';
-
-const NICKNAME_PATTERN = /^[A-Za-zㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-const GROUP_NAME_PATTERN = /^[ㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
-
-const getFieldVariant = (value, isValid) => {
-  if (!value.trim()) {
-    return 'default';
-  }
-
-  return isValid ? 'success' : 'error';
-};
+import styles from './CreateGroupPage.module.scss';
 
 const CreateGroupPage = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState('');
-  const [tripName, setTripName] = useState('');
-  const [tripPeriod, setTripPeriod] = useState('1박 2일');
-  const [travelRange, setTravelRange] = useState();
-  const [calendarMonth, setCalendarMonth] = useState(getCurrentMonthStart);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const {
+    form,
+    travelRange,
+    calendarMonth,
+    isCalendarOpen,
+    tripPeriod,
+    isNicknameValid,
+    isTripNameValid,
+    nicknameVariant,
+    tripNameVariant,
+    setCalendarMonth,
+    setIsCalendarOpen,
+    handleChangeNickname,
+    handleChangeGroupName,
+    handleChangeTripPeriod,
+    handleSelectDate,
+    handleSubmit,
+  } = useCreateGroupForm();
 
-  const handleChangeTripPeriod = (nextTripPeriod) => {
-    setTripPeriod(nextTripPeriod);
-    setTravelRange((currentRange) =>
-      getTravelRange(currentRange?.from, nextTripPeriod),
-    );
-  };
-
-  const isNicknameValid = NICKNAME_PATTERN.test(nickname.trim());
-  const isTripNameValid = GROUP_NAME_PATTERN.test(tripName.trim());
-  const nicknameVariant = getFieldVariant(nickname, isNicknameValid);
-  const tripNameVariant = getFieldVariant(tripName, isTripNameValid);
   const isFirstStep = params.step === '1';
   const isCurrentStepValid = isFirstStep ? isNicknameValid : isTripNameValid;
 
   return (
-    <form className={styles['create-group-page']}>
+    <form onSubmit={handleSubmit} className={styles['create-group-page']}>
       <section className={styles['create-group-section']}>
         {isFirstStep ? (
           <NicknameStep
-            nickname={nickname}
-            setNickname={setNickname}
+            nickname={form.leaderNickname}
+            setNickname={handleChangeNickname}
             nicknameVariant={nicknameVariant}
             nicknameMessage="2~10자 한글/영문만 입력 가능합니다."
           />
         ) : (
           <TripInfoStep
-            tripName={tripName}
-            setTripName={setTripName}
+            tripName={form.name}
+            setTripName={handleChangeGroupName}
             tripNameVariant={tripNameVariant}
             tripNameMessage="2~10자 한글만 입력 가능합니다."
             tripPeriod={tripPeriod}
@@ -76,7 +62,9 @@ const CreateGroupPage = () => {
           variant={isCurrentStepValid ? 'brand' : 'muted'}
           disabled={!isCurrentStepValid}
           onClick={() => {
-            isFirstStep ? navigate('/group/create/2') : navigate('/');
+            if (isFirstStep) {
+              navigate('/group/create/2');
+            }
           }}
         >
           다음
@@ -88,9 +76,7 @@ const CreateGroupPage = () => {
         month={calendarMonth}
         selectedRange={travelRange}
         onMonthChange={setCalendarMonth}
-        onSelectDate={(date) =>
-          setTravelRange(getTravelRange(date, tripPeriod))
-        }
+        onSelectDate={handleSelectDate}
         onClose={() => setIsCalendarOpen(false)}
         onConfirm={() => setIsCalendarOpen(false)}
       />

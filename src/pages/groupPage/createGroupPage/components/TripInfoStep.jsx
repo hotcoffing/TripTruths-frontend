@@ -15,11 +15,10 @@ const TripInfoStep = ({
 }) => {
   return (
     <>
-      <div
-        className={styles['create-group-back']}
-        onClick={() => window.history.back()}
-      >
-        <PreviousStepSvg />
+      <div className={styles['create-group-back']}>
+        <div onClick={() => window.history.back()}>
+          <PreviousStepSvg />
+        </div>
       </div>
 
       <h1 className={styles['create-group-title']}>Trip Truth</h1>
