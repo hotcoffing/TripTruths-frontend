@@ -25,7 +25,7 @@ export function shareInviteLink({ inviteCode, groupName }) {
     window.Kakao.Share.sendDefault({
         objectType: "feed",
         content: {
-            title: groupName ?? "TripTruths 여행 초대",
+            title: (groupName ? groupName + "에서 당신을 초대합니다!" : "TripTruths에서 당신을 초대합니다!"),
             description: "함께 여행 취향을 맞춰보세요!",
             imageUrl: imageUrl,
             link: {
@@ -35,7 +35,7 @@ export function shareInviteLink({ inviteCode, groupName }) {
         },
         buttons: [
             {
-                title: "초대 링크로 참여",
+                title: "초대 링크로 참여하기",
                 link: {
                     mobileWebUrl: inviteUrl,
                     webUrl: inviteUrl,
