@@ -5,6 +5,7 @@ import AnalysisPage from '@/pages/analysisPage/AnalysisPage';
 import ResultsPage from '@/pages/resultsPage/ResultsPage';
 import SurveyPage from '@/pages/surveyPage/SurveyPage';
 import GroupPage from '@/pages/groupPage/GroupPage';
+import GroupPageMock from '@/pages/groupPage/GroupPageMock';
 
 const router = createBrowserRouter([
   {
@@ -28,8 +29,12 @@ const router = createBrowserRouter([
       },
       {
         path: '/group',
-        element: <GroupPage />
-      }
+        element: <GroupPage />,
+      },
+      {
+        path: '/group/mock',
+        element: <GroupPageMock />,
+      },
     ],
   },
 ]);
