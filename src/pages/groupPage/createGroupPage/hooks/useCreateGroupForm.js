@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { instance } from '@/apis/instance';
 import {
   formatDateValue,
   getCurrentMonthStart,
@@ -18,7 +17,8 @@ import {
   getInitialFormState,
   hasAtLeastTwoHangulCharacters,
   isValidNickname,
-} from '../utils/createGroupFormUtils';
+} from '../../../../utils/GroupFormUtils';
+import { createGroup } from '@/apis/groupApi';
 
 export function useCreateGroupForm() {
   // 폼 payload 전체를 단일 상태로 관리합니다.
@@ -104,7 +104,8 @@ export function useCreateGroupForm() {
     console.log(form);
 
     try {
-      await instance.post('/api/v1/trip-groups', form);
+      const results = await createGroup(form);
+      console.log(results);
       sessionStorage.removeItem(SESSION_KEY);
     } catch (error) {
       console.error(error);

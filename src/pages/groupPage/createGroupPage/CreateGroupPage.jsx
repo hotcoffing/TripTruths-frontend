@@ -37,6 +37,8 @@ const CreateGroupPage = () => {
       <section className={styles['create-group-section']}>
         {isFirstStep ? (
           <NicknameStep
+            title="어떤 이름으로 부를까요?"
+            subTitle="친구들에게 보일 이름이에요"
             nickname={form.leaderNickname}
             setNickname={handleChangeNickname}
             nicknameVariant={nicknameVariant}

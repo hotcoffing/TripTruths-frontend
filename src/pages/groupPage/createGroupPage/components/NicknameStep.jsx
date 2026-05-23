@@ -2,6 +2,8 @@ import InputField from '@/components/common/inputField/InputField';
 import styles from './NicknameStep.module.scss';
 
 const NicknameStep = ({
+  title,
+  subTitle,
   nickname,
   setNickname,
   nicknameVariant = 'default',
@@ -12,8 +14,8 @@ const NicknameStep = ({
       <h1 className={styles['create-group-title']}>Trip Truth</h1>
 
       <div className={styles['create-group-text']}>
-        <h2>어떤 이름으로 부를까요?</h2>
-        <p>친구들에게 보일 이름이에요</p>
+        <h2>{title}</h2>
+        <p>{subTitle}</p>
       </div>
 
       <div className={styles['create-group-input']}>

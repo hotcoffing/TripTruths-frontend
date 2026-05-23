@@ -2,7 +2,7 @@ import {
   DEFAULT_TRIP_PERIOD,
   SESSION_KEY,
   TRIP_LENGTH_BY_PERIOD,
-} from '../constants/createGroupFormConstants';
+} from '../pages/groupPage/createGroupPage/constants/createGroupFormConstants';
 
 const HANGUL_CHARACTER_PATTERN = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
 const NICKNAME_ALLOWED_PATTERN = /^[A-Za-zㄱ-ㅎㅏ-ㅣ가-힣]+$/;
