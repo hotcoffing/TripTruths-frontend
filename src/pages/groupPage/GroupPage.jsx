@@ -5,17 +5,10 @@ import GroupInputProgress from "./components/GroupInputProgress";
 import Button from "@/components/common/Button";
 import { useEffect, useState } from "react";
 import { instance } from '@/apis/instance';
+import { shareInviteLink } from "@/utils/kakaoShare";
 
-// 추후 API 확정 후 구현 예정
-function copyLink() {
-
-}
-
-function shareKakao() {
-
-}
-
-// API 응답이 group_member 배열 또는 trip_group + 목록 필드일 수 있음
+// API 응답 변환기
+// 멤버 목록 정보 변환기 (배열 반환환)
 function extractMemberList(data) {
     if (Array.isArray(data)) return data;
     if (Array.isArray(data?.group_members)) return data.group_members;
@@ -24,7 +17,16 @@ function extractMemberList(data) {
     return null;
 }
 
-function readStoredJson(key) {
+// 그룹 정보 변환기 (객체 반환)
+function extractInviteData(data) {
+    if (data.name != null && data.trip_length != null && data.status != null) {
+        return data;
+    }
+    return null;
+}
+
+// 로컬 스토리지에서 데이터 가져오기
+function getStoredJson(key) {
     try {
         const raw = localStorage.getItem(key);
         if (raw == null) return null;
@@ -46,32 +48,27 @@ function isMemberSurveyCompleted(member) {
     return false;
 }
 
-function extractGroupInfo(data) {
-    if (!data || Array.isArray(data)) return null;
-    if (data.name != null || data.trip_length != null || data.status != null) {
-        return data;
-    }
-    return null;
-}
-
 function GroupPage() {
     // 정적 텍스트 데이터 
     const groupNotReadyText = "모든 친구가 입력해야 시작할 수 있어요";
     const groupMemberReadyText = "방장만 AI 분석을 시작할 수 있어요";
     const groupLeaderReadyText = "AI 분석 시작하기";
-    const groupErrorText = "그룹 정보를 찾을 수 없습니다.";
+    const groupErrorText = "에러가 발생하였습니다. 콘솔을 확인해주세요.";
 
     // 로컬 스토리지에서 저장된 개인 사용자 정보 가져오기
     // 가져올 목록 : 현재 사용자 정보, 초대코드
 
     // group_member 테이블의 객체 전체를 로컬 스토리지에서 가져옴
-    const user = readStoredJson("user");
-    // 그룹 초대 코드도 로컬 스토리지에서 가져옴
-    const inviteCode = readStoredJson("inviteCode");
+    const user = getStoredJson("group_member");
 
-    // group_member 테이블 내부의 그룹 ID 외래키
-    // ?. 로 안전하게 데이터 가져오기
-    const userGroupId = user?.trip_group_id;        
+    // trip_group 테이블의 객체 전체를 로컬 스토리지에서 가져옴
+    const group = getStoredJson("trip_group");
+
+    // URL 파라미터로 초대 코드 가져오기
+    const inviteCode = new URLSearchParams(window.location.search).get("inviteCode");
+
+    // 로컬 스토리지에서 받아온 그룹 정보 중 그룹 ID 가져오기 
+    const tripGroupId = group?.id;
 
     // API 데이터 가져오기
     // 가져올 목록 : 그룹 정보, 사용자 목록 정보 
@@ -92,7 +89,7 @@ function GroupPage() {
         }
 
         const fetchAllData = async () => {
-            if (!userGroupId) {
+            if (!tripGroupId) {
                 console.error('로컬 스토리지에 그룹 ID 정보가 존재하지 않습니다.');
                 setNextButtonText(groupErrorText);
                 return;
@@ -101,35 +98,49 @@ function GroupPage() {
             try {
                 // Promise.all을 사용하여 두 API 요청을 동시에 보냄
                 const [groupResponse, memberListResponse] = await Promise.all([
-                    // API 명세서가 나오면 엔드포인트 설정
+                    // API 명세서가 확실하게 나오면 엔드포인트 설정 필요
                     instance.get(`/api/v1/trip-groups/invite/${inviteCode}`),
-                    instance.get(`/api/v1/trip-groups/${userGroupId}`)
+                    instance.get(`/api/v1/trip-groups/${tripGroupId}`)
                 ]);
 
-                const inviteData = groupResponse.data;
-                const groupDetailData = memberListResponse.data;
 
-                const parsedGroupInfo =
-                    extractGroupInfo(inviteData) ?? extractGroupInfo(groupDetailData);
-                const parsedMemberList =
-                    extractMemberList(groupDetailData) ?? extractMemberList(inviteData);
+                // 그룹 정보 받아오기
+                const groupInviteData = groupResponse.data;
+                // 그룹 멤버 목록 정보 받아오기
+                const groupMemberListData = memberListResponse.data;
 
-                if (!parsedGroupInfo || !parsedMemberList) {
-                    console.error('그룹/멤버 응답 형식이 올바르지 않습니다.', {
-                        inviteData,
-                        groupDetailData,
+                const parsedInviteData = extractInviteData(groupInviteData);
+                const parsedMemberListData = extractMemberList(groupMemberListData);
+
+                // 그룹 정보, 멤버 목록 정보 응답 형식 검증 에러 처리
+                if (!parsedInviteData && !parsedMemberListData) {
+                    console.error('그룹 정보, 멤버 목록 정보 모두 응답 형식이 올바르지 않습니다.', {
+                        groupInviteData,
+                        groupMemberListData,
+                    });
+                    setNextButtonText(groupErrorText);
+                    return;
+                } else if (!parsedInviteData) {
+                    console.error('그룹 정보 형식이 올바르지 않습니다.', {
+                        groupInviteData,
+                        groupMemberListData,
+                    });
+                    setNextButtonText(groupErrorText);
+                    return;
+                } else if (!parsedMemberListData) {
+                    console.error('멤버 목록 정보 형식이 올바르지 않습니다.', {
+                        groupInviteData,
+                        groupMemberListData,
                     });
                     setNextButtonText(groupErrorText);
                     return;
                 }
 
                 // 받아온 데이터 상태 저장
-                setGroupInfo(parsedGroupInfo);
-                setMemberList(parsedMemberList);
+                setGroupInfo(parsedInviteData);
+                setMemberList(parsedMemberListData);
 
-                const freshMemberList = parsedMemberList;
-
-                const allSurveyCompleted = freshMemberList.length === freshMemberList.filter(
+                const allSurveyCompleted = parsedMemberListData.length === parsedMemberListData.filter(
                     (member) => isMemberSurveyCompleted(member)
                 ).length;
 
@@ -171,6 +182,33 @@ function GroupPage() {
             </div>
         );
     }
+
+    // ============================== 공유 ==================================
+    
+    // 링크 복사
+    async function copyLink() {
+        const targetUrl = `${window.location.origin}/invite/${inviteCode}`;
+        try {
+            await navigator.clipboard.writeText(targetUrl);
+            alert("링크가 복사되었습니다.");
+        } catch {
+            alert("링크 복사에 실패했습니다.");
+        }
+    }
+        
+    // 카카오톡 공유
+    async function shareKakao() {
+        if (!inviteCode) {
+            console.error("초대 코드가 없습니다.");
+            return;
+        }
+        shareInviteLink({
+            inviteCode,
+            groupName: groupInfo?.name,
+        });
+    }
+    
+    // ===================================================================
 
     return (
         <div className={style['group-container']}>
