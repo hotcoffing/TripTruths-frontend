@@ -1,4 +1,42 @@
 import { useState } from 'react';
+import { setStoredJson } from '@/utils/setStorage';
+import { getStoredJson } from '@/utils/getStorage';
+import { postSurveyData } from '@/apis/tripSurveysApi';
+import {
+    ACTIVITY_TYPE_BY_OPTION_ID,
+    MOOD_TYPE_BY_OPTION_ID,
+} from '@/constants/surveyOptions';
+
+/** Q4 슬라이더 값(만 원) → "300,000" 형식 */
+function formatBudget(manWon) {
+    const amount = Number(manWon) * 10000;
+    return amount.toLocaleString('en-US');
+}
+
+/** API 제출 body (추후 POST 연동) */
+function buildSurveySubmit(comment) {
+    const q1Selections = getStoredJson('survey_Q1') ?? [];
+    const q2Selections = getStoredJson('survey_Q2') ?? [];
+    const q3 = getStoredJson('survey_Q3') ?? { text: '', selectedTags: [] };
+    const q4 = getStoredJson('survey_Q4') ?? 10;
+
+    const moods = q1Selections
+        .map((item) => MOOD_TYPE_BY_OPTION_ID[item.id])
+        .filter(Boolean);
+
+    const activities = q2Selections
+        .map((item) => ACTIVITY_TYPE_BY_OPTION_ID[item.id])
+        .filter(Boolean);
+
+    return {
+        moods,
+        activities,
+        avoidanceText: q3.text ?? '',
+        avoidanceTags: Array.isArray(q3.selectedTags) ? q3.selectedTags : [],
+        budget: formatBudget(q4),
+        comment: comment ?? '',
+    };
+}
 
 export function useSurvey() {
     // 현재 폼 출력 위치 변수
@@ -25,7 +63,7 @@ export function useSurvey() {
     // 태그 버튼 선택 상태 관리
     const [selectedTags, setSelectedTags] = useState([]);
 
-    // 최대 선택 가능 지정 핸들러
+    // 최대 Q1, Q2 버튼 리스트 선택 핸들러
     const handleButtonClick = (Obj, count) => {
         const isQ1 = nowForm === "Q1";
         const setter = isQ1 ? setQ1SelectedList : setQ2SelectedList;
@@ -37,7 +75,7 @@ export function useSurvey() {
             if (isAlreadySelected) {
                 updatedList = prev.filter((item) => item.id !== Obj.id);
             } 
-            else {
+            else { 
                 if (prev.length >= count) {
                     return prev;
                 } else {
@@ -84,20 +122,14 @@ export function useSurvey() {
             }
         }
 
-        // sessionStorage에 중간 저장 (추후 구현 고려)
-        sessionStorage.setItem(`survey_${nowForm}`, JSON.stringify(formData));
+        // 로컬 스토리지에 중간 저장
+        setStoredJson(`survey_${nowForm}`, formData);
 
         // 최종 제출 처리
         if (targetForm === "SUBMIT") {
-            const finalData = {
-                Q1: JSON.parse(sessionStorage.getItem("survey_Q1") || "[]"),
-                Q2: JSON.parse(sessionStorage.getItem("survey_Q2") || "[]"),
-                Q3: JSON.parse(sessionStorage.getItem("survey_Q3") || "{}"),
-                Q4: JSON.parse(sessionStorage.getItem("survey_Q4") || "0"),
-                Q5: formData // 현재 입력값 (q5Text)
-            };
-            console.log("=== 최종 설문 제출 데이터 ===");
-            console.log(JSON.stringify(finalData, null, 2));
+            const submitPayload = buildSurveySubmit(formData);
+            console.log(JSON.stringify(submitPayload, null, 2));
+            postSurveyData(submitPayload);
             alert("제출이 완료되었습니다! 콘솔을 확인해주세요.");
             return;
         }

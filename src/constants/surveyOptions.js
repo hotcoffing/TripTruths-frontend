@@ -27,3 +27,23 @@ export const SURVEY_TAGS = [
 // 반복 유틸리티 함수로 활용 (Q1, Q2 선택 옵션 조회)
 export const getSurveySelectOptionsByQuestion = (questionId) =>
     SURVEY_SELECT_OPTIONS.filter((item) => item.id.startsWith(questionId));
+
+/** survey_mood.mood_type */
+export const MOOD_TYPE_BY_OPTION_ID = {
+    Q1_1: 'ACTIVITY',
+    Q1_2: 'RELAXATION',
+    Q1_3: 'CULTURE_TOURISM',
+    Q1_4: 'FOOD',
+    Q1_5: 'AESTHETIC_PHOTO',
+    Q1_6: 'ENTERTAINMENT',
+};
+
+/** survey_activity.activity_type */
+export const ACTIVITY_TYPE_BY_OPTION_ID = {
+    Q2_1: 'OCEAN',
+    Q2_2: 'MOUNTAIN_NATURE',
+    Q2_3: 'CITY_EXPLORATION',
+    Q2_4: 'CAFE_TOUR',
+    Q2_5: 'SHOPPING',
+    Q2_6: 'NIGHT_VIEW',
+};
