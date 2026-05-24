@@ -3,25 +3,12 @@ import LeaderImg from "@/assets/Leader.svg"
 import ParticipantImg from "@/assets/Participant.svg"
 import Button from "@/components/common/Button"
 
-// group_member.is_survey_completed (triptruth.sql) — API·직렬화 형태 차이 대응
+// 멤버 설문 완료 여부 확인
 function isMemberSurveyCompleted(member) {
-    if (member.is_survey_completed === true) {
-        return true;
-    }
-    if (member.is_survey_completed === 1) {
-        return true;
-    }
-    // API가 카멜 케이스 형식 JSON을 내려주는 경우
-    if (member.isSurveyCompleted === true) {
-        return true;
-    }
-    if (member.isSurveyCompleted === 1) {
-        return true;
-    }
-    return false;
+    return member.surveyCompleted === true || member.surveyCompleted === 1;
 }
 
-// member.id와 myId(number/string) 비교
+// 본인 여부 확인
 function isSameMemberId(memberId, myId) {
     if (myId == null || memberId == null) {
         return false;
@@ -52,15 +39,14 @@ function GroupInputProgress({myId, memberList, handleMovePage}) {
                     const pendingText = "대기중";
                     
                     // 유효성 검사 (데이터가 없는 경우 무시)
-                    if (item?.id == null) {
+                    if (item?.memberId == null) {
                         return null;
                     }
 
-                    // group_member 컬럼 변수화
                     const nickname = item.nickname ?? "이름 없음 (오류)";
                     const role = item.role;
                     const isCompleted = isMemberSurveyCompleted(item);
-                    const isMe = isSameMemberId(item.id, myId);
+                    const isMe = isSameMemberId(item.memberId, myId);
 
                     // 이미지 소스 변환
                     let imgSrc = ParticipantImg;
@@ -100,7 +86,7 @@ function GroupInputProgress({myId, memberList, handleMovePage}) {
                     };
 
                     return (
-                        <div key={item.id} className={style['member-block']}>
+                        <div key={item.memberId} className={style['member-block']}>
                             <div className={style['member-left-side']}>
                                 <img src={imgSrc} className={style['member-icon']} />
                                 <span className={style['member-name']}>{memberName}</span>
