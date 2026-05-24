@@ -10,66 +10,60 @@ import { shareInviteLink } from "@/utils/kakaoShare";
 const MOCK_INVITE_CODE = "TEST-INVITE-CODE";
 
 const MOCK_GROUP_INFO = {
-    id: 1,
+    tripGroupId: 1,
     name: "여름 여행",
-    trip_length: "ONE_NIGHT",
-    start_date: "2026-08-07",
-    end_date: "2026-08-08",
+    tripLength: "ONE_NIGHT",
+    startDate: "2026-08-07",
+    endDate: "2026-08-08",
     status: "GATHERING",
 };
 
 const MOCK_MEMBER_LIST = [
     {
-        id: 1,
-        trip_group_id: 1,
+        memberId: 1,
+        tripGroupId: 1,
         nickname: "수민",
         role: "LEADER",
-        is_survey_completed: true,
+        surveyCompleted: false,
     },
     {
-        id: 2,
-        trip_group_id: 1,
+        memberId: 2,
+        tripGroupId: 1,
         nickname: "지훈",
         role: "MEMBER",
-        is_survey_completed: true,
+        surveyCompleted: true,
     },
     {
-        id: 3,
-        trip_group_id: 1,
+        memberId: 3,
+        tripGroupId: 1,
         nickname: "민지",
         role: "MEMBER",
-        is_survey_completed: true,
+        surveyCompleted: true,
     },
     {
-        id: 4,
-        trip_group_id: 1,
+        memberId: 4,
+        tripGroupId: 1,
         nickname: "서영",
         role: "MEMBER",
-        is_survey_completed: true,
+        surveyCompleted: true,
     },
 ];
 
 const MOCK_USER = {
-    id: 1,
-    trip_group_id: 1,
+    memberId: 1,
+    tripGroupId: 1,
     nickname: "수민",
     role: "LEADER",
-    is_survey_completed: true,
+    surveyCompleted: false,
 };
 
 function isMemberSurveyCompleted(member) {
-    if (member.is_survey_completed === true) {
-        return true;
-    }
-    if (member.isSurveyCompleted === true) {
-        return true;
-    }
-    return false;
+    return member.surveyCompleted === true;
 }
 
 function seedMockLocalStorage() {
-    localStorage.setItem("group_member", JSON.stringify(MOCK_USER));
-    localStorage.setItem("trip_group", JSON.stringify(MOCK_GROUP_INFO));
+    localStorage.setItem("groupMember", JSON.stringify(MOCK_USER));
+    localStorage.setItem("tripGroup", JSON.stringify(MOCK_GROUP_INFO));
 }
 
 function MockGroupPage() {
@@ -132,16 +126,16 @@ function MockGroupPage() {
         <div className={style['group-container']}>
             <GroupHeader
                 groupName={groupInfo.name}
-                tripLength={groupInfo.trip_length}
-                startDate={groupInfo.start_date}
-                endDate={groupInfo.end_date}
+                tripLength={groupInfo.tripLength}
+                startDate={groupInfo.startDate}
+                endDate={groupInfo.endDate}
             />
             <GroupInvite
                 handleCopyLink={copyLink}
                 handleKakao={shareKakao}
             />
             <GroupInputProgress
-                myId={user.id}
+                myId={user.memberId}
                 memberList={memberList}
                 handleMovePage={() => {
                     console.log("survey 페이지로 이동");
