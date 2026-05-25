@@ -7,13 +7,13 @@ import {
     MOOD_TYPE_BY_OPTION_ID,
 } from '@/constants/surveyOptions';
 
-/** Q4 슬라이더 값(만 원) → "300,000" 형식 */
+// Q4 슬라이더 값 → N * 10000 원 형식
 function formatBudget(manWon) {
-    const amount = Number(manWon) * 10000;
-    return amount.toLocaleString('en-US');
+    const amount = parseInt(manWon) * 10000;
+    return amount.toString();
 }
 
-/** API 제출 body (추후 POST 연동) */
+// API 제출 body
 function buildSurveySubmit(comment) {
     const q1Selections = getStoredJson('survey_Q1') ?? [];
     const q2Selections = getStoredJson('survey_Q2') ?? [];
