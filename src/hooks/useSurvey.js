@@ -17,6 +17,7 @@ function formatBudget(manWon) {
 
 // API 제출 body
 function buildSurveySubmit(comment) {
+    // 로컬 스토리지에 저장된 설문 데이터 조회
     const q1Selections = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q1)) ?? [];
     const q2Selections = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q2)) ?? [];
     const q3 = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q3)) ?? { text: '', selectedTags: [] };
@@ -30,6 +31,7 @@ function buildSurveySubmit(comment) {
         .map((item) => ACTIVITY_TYPE_BY_OPTION_ID[item.id])
         .filter(Boolean);
 
+    // API 제출 body 반환
     return {
         moods,
         activities,
@@ -74,20 +76,25 @@ export function useSurvey() {
             const isAlreadySelected = prev.some((item) => item.id === Obj.id);
             let updatedList;
 
+            // 이미 선택된 경우 해당 버튼 제거
             if (isAlreadySelected) {
                 updatedList = prev.filter((item) => item.id !== Obj.id);
             } 
+            // 선택되지 않은 경우 버튼 추가
             else { 
+                // 최대 선택 가능 개수 초과 시 추가 불가
                 if (prev.length >= count) {
                     return prev;
                 } else {
+                    // 최대 선택 가능 개수 이하인 경우 버튼 추가
                     updatedList = [...prev, Obj];
                 }
             }
 
+            // 선택 시 논리적으로 에러 상태 초기화
             setIsError(false);
 
-            // 다음 버튼 활성화 여부 판단
+            // 다음 버튼 활성화 여부 판단 (선택된 버튼이 있는 경우 활성화)
             setIsToNext(updatedList.length > 0);
 
             return updatedList;
@@ -113,9 +120,7 @@ export function useSurvey() {
 
     // 다음 버튼을 누르는 경우의 데이터 제출 핸들러 (다음 버튼)
     const handleSubmit = (targetForm, formData, nextFormData = null) => {
-        // API 전달 구현 필요
-
-        // Q1, Q2 유효성 검사 (버튼 선택형)
+        // Q1, Q2 유효성 검사 (버튼 선택형) : 선택된 버튼이 없는 경우 에러 처리
         if (nowForm === SURVEY_FORM_NAME.Q1 || nowForm === SURVEY_FORM_NAME.Q2) {
             if (formData.length === 0) {
                 setIsError(true);
@@ -124,13 +129,20 @@ export function useSurvey() {
             }
         }
 
-        // 로컬 스토리지에 중간 저장
+        // 로컬 스토리지에 중간 저장 (설문 데이터 저장)
         setStoredJson(STORAGE_KEY.SURVEY_FORM(nowForm), formData);
 
-        // 최종 제출 처리
+        // Q5에서는 최종 제출 처리 후 페이지 이동 (설문 데이터 제출)
         if (targetForm === SURVEY_FORM_NAME.SUBMIT) {
+            // API 제출 body 생성
             const submitResult = buildSurveySubmit(formData);
+
+            // API 제출
             postSurveyData(submitResult);
+
+            // 페이지 이동 (추후 구현)
+            // navigate('/survey/result');
+            
             return;
         }
 

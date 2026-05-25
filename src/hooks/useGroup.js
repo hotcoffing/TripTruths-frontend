@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchGroupsData } from "@/apis/tripGroupsApi";
 import { shareInviteLink } from "@/utils/kakaoShare";
 import { getStoredJson } from "@/utils/getStorage";
@@ -36,29 +36,37 @@ export function useGroup() {
         }
 
         const loadGroupData = async () => {
+            // 그룹 ID가 없는 경우 에러 처리
             if (tripGroupId == null) {
                 console.error(GROUP_CONSOLE_MESSAGE.LOCAL_STORAGE_ERROR_MESSAGE);
                 setNextButtonText(GROUP_BUTTON_TEXT.ERROR);
                 return;
             }
 
+            // 그룹 데이터 조회
             try {
                 const result = await fetchGroupsData(tripGroupId, inviteCode);
 
+                // 그룹 데이터 조회 실패 시 에러 처리
                 if (!result) {
                     setNextButtonText(GROUP_BUTTON_TEXT.ERROR);
                     return;
                 }
 
+                // 정규화된 그룹 데이터 설정
                 const { memberList: parsedMemberListData, groupInfo: parsedInvitedGroupData } = result;
 
+                // 그룹 정보 설정
                 setGroupInfo(parsedInvitedGroupData);
+                // 멤버 목록 설정
                 setMemberList(parsedMemberListData);
 
+                // 모든 멤버의 설문 완료 여부 확인
                 const allSurveyCompleted =
                     parsedMemberListData.length ===
                     parsedMemberListData.filter((member) => isMemberSurveyCompleted(member)).length;
 
+                // 모든 멤버의 설문 완료 여부 확인 결과에 따른 버튼 텍스트 설정
                 if (!allSurveyCompleted) {
                     setIsToNext(false);
                     setNextButtonText(GROUP_BUTTON_TEXT.NOT_READY);
@@ -81,17 +89,22 @@ export function useGroup() {
             }
         };
 
+        // 그룹 정보가 없는 경우 그룹 데이터 조회
         if (groupInfo === null) {
             loadGroupData();
-        } else {
+        } 
+        // 백엔드 요구사항 : 그룹 정보가 있는 경우 그룹 데이터 3초마다 조회
+        else {
             const timer = setTimeout(loadGroupData, GROUP_POLLING_INTERVAL);
             return () => clearTimeout(timer);
         }
     }, [groupInfo, inviteCode, tripGroupId, user?.role]);
 
+    // 그룹 정보가 없거나 멤버 목록이 없는 경우 로딩 중
     const isLoading = !groupInfo || !Array.isArray(memberList);
 
-    const copyLink = (async () => {
+    // 초대 링크 복사
+    const copyLink = useCallback(async () => {
         const targetUrl = GROUP_INVITE_URL(inviteCode);
         try {
             await navigator.clipboard.writeText(targetUrl);
@@ -101,7 +114,8 @@ export function useGroup() {
         }
     }, [inviteCode]);
 
-    const shareKakao = (async () => {
+    // 초대 링크 카카오 공유
+    const shareKakao = useCallback(async () => {
         if (!inviteCode) {
             console.error(GROUP_CONSOLE_MESSAGE.INVITE_CODE_ERROR_MESSAGE);
             return;
@@ -112,7 +126,8 @@ export function useGroup() {
         });
     }, [inviteCode, groupInfo?.name]);
 
-    const handleStartAnalysis = (() => {
+    // AI 분석 시작 (다음 버튼 클릭 시 실행 / 아직 미구현)
+    const handleStartAnalysis = useCallback(() => {
         if (!isToNext) return;
         console.log("AI 분석 시작");
     }, [isToNext]);
