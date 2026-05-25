@@ -6,6 +6,8 @@ import {
     ACTIVITY_TYPE_BY_OPTION_ID,
     MOOD_TYPE_BY_OPTION_ID,
 } from '@/constants/surveyOptions';
+import { SURVEY_FORM_NAME } from '@/constants/surveyFormName';
+import { STORAGE_KEY } from '@/constants/storageKey';
 
 // Q4 슬라이더 값 → N * 10000 원 형식
 function formatBudget(manWon) {
@@ -15,10 +17,10 @@ function formatBudget(manWon) {
 
 // API 제출 body
 function buildSurveySubmit(comment) {
-    const q1Selections = getStoredJson('survey_Q1') ?? [];
-    const q2Selections = getStoredJson('survey_Q2') ?? [];
-    const q3 = getStoredJson('survey_Q3') ?? { text: '', selectedTags: [] };
-    const q4 = getStoredJson('survey_Q4') ?? 10;
+    const q1Selections = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q1)) ?? [];
+    const q2Selections = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q2)) ?? [];
+    const q3 = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q3)) ?? { text: '', selectedTags: [] };
+    const q4 = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q4)) ?? 10;
 
     const moods = q1Selections
         .map((item) => MOOD_TYPE_BY_OPTION_ID[item.id])
@@ -40,7 +42,7 @@ function buildSurveySubmit(comment) {
 
 export function useSurvey() {
     // 현재 폼 출력 위치 변수
-    const [nowForm, setNowForm] = useState("Q1");
+    const [nowForm, setNowForm] = useState(SURVEY_FORM_NAME.Q1);
 
     // 에러 검사 변수
     const [isError, setIsError] = useState(false);
@@ -65,7 +67,7 @@ export function useSurvey() {
 
     // 최대 Q1, Q2 버튼 리스트 선택 핸들러
     const handleButtonClick = (Obj, count) => {
-        const isQ1 = nowForm === "Q1";
+        const isQ1 = nowForm === SURVEY_FORM_NAME.Q1;
         const setter = isQ1 ? setQ1SelectedList : setQ2SelectedList;
 
         setter((prev) => {
@@ -114,7 +116,7 @@ export function useSurvey() {
         // API 전달 구현 필요
 
         // Q1, Q2 유효성 검사 (버튼 선택형)
-        if (nowForm === "Q1" || nowForm === "Q2") {
+        if (nowForm === SURVEY_FORM_NAME.Q1 || nowForm === SURVEY_FORM_NAME.Q2) {
             if (formData.length === 0) {
                 setIsError(true);
                 setIsToNext(false);
@@ -123,19 +125,19 @@ export function useSurvey() {
         }
 
         // 로컬 스토리지에 중간 저장
-        setStoredJson(`survey_${nowForm}`, formData);
+        setStoredJson(STORAGE_KEY.SURVEY_FORM(nowForm), formData);
 
         // 최종 제출 처리
-        if (targetForm === "SUBMIT") {
-            const submitPayload = buildSurveySubmit(formData);
-            postSurveyData(submitPayload);
-            alert("제출이 완료되었습니다! 콘솔을 확인해주세요.");
+        if (targetForm === SURVEY_FORM_NAME.SUBMIT) {
+            const submitResult = buildSurveySubmit(formData);
+            postSurveyData(submitResult);
             return;
         }
 
         // 유효하다면 다음 폼으로 이동
         setNowForm(targetForm);
         setIsError(false);
+
         // 현재는 구조상 하드코딩으로 설정 (추후 프로젝트 구조의 사용자 흐름이 변경되지 않는한 무조건 고정)
         if (nextFormData && nextFormData.length === 0) {
             setIsToNext(false);

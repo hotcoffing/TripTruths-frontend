@@ -3,7 +3,8 @@ import GroupHeader from "./components/GroupHeader";
 import GroupInvite from "./components/GroupInvite";
 import GroupInputProgress from "./components/GroupInputProgress";
 import Button from "@/components/common/Button";
-import { GROUP_ERROR_TEXT, useGroup } from "@/hooks/useGroup";
+import { useGroup } from "@/hooks/useGroup";
+import { GROUP_BUTTON_TEXT } from "@/constants/groupHooksConstants";
 
 function GroupPage() {
     const {
@@ -21,7 +22,7 @@ function GroupPage() {
     if (isLoading) {
         return (
             <div className={style["group-container"]}>
-                {nextButtonText === GROUP_ERROR_TEXT
+                {nextButtonText === GROUP_BUTTON_TEXT.ERROR
                     ? nextButtonText
                     : "데이터를 불러오는 중입니다..."}
             </div>

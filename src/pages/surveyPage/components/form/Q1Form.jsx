@@ -1,6 +1,7 @@
 import style from './Q1Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import Button from '@/components/common/Button';
+import { SURVEY_FORM_NAME } from '@/constants/surveyFormName';
 
 function Q1Form({ 
         isError,            // Info의 이미지 에러 출력을 위한 변수 
@@ -16,7 +17,7 @@ function Q1Form({
     return (
         <div className={style['Q1-container']}>
             <SurveyInfo 
-                type="Q1"
+                type={SURVEY_FORM_NAME.Q1}
                 isError={isError}
             />
 
@@ -38,7 +39,7 @@ function Q1Form({
                     size="md"
                     content="다음"
                     isActive={isToNext}
-                    onClick={() => handleIsNext("Q2", nowSelectedList, nextSelectedList)}
+                    onClick={() => handleIsNext(SURVEY_FORM_NAME.Q2, nowSelectedList, nextSelectedList)}
                 />
             </div>
         </div>

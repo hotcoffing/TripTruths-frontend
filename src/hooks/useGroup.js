@@ -1,12 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchGroupsData } from "@/apis/tripGroupsApi";
 import { shareInviteLink } from "@/utils/kakaoShare";
 import { getStoredJson } from "@/utils/getStorage";
+import { STORAGE_KEY } from "@/constants/storageKey";
+import { URL_PARAM } from "@/constants/urlParam";
+import { GROUP_BUTTON_TEXT, GROUP_POLLING_INTERVAL, GROUP_INVITE_URL, GROUP_CONSOLE_MESSAGE, GROUP_ALERT_MESSAGE } from "@/constants/groupHooksConstants";
+import { GROUP_STATUS, GROUP_ROLE } from "@/constants/groupStatus";
 
-const GROUP_NOT_READY_TEXT = "모든 친구가 입력해야 시작할 수 있어요";
-const GROUP_MEMBER_READY_TEXT = "방장만 AI 분석을 시작할 수 있어요";
-const GROUP_LEADER_READY_TEXT = "AI 분석 시작하기";
-export const GROUP_ERROR_TEXT = "에러가 발생하였습니다. 콘솔을 확인해주세요.";
+// 테스트 완료 후 삭제
+import { GROUP_TEST_INVITE_CODE } from "@/constants/groupHooksConstants";
 
 function isMemberSurveyCompleted(member) {
     if (member.surveyCompleted === true) return true;
@@ -14,28 +16,29 @@ function isMemberSurveyCompleted(member) {
 }
 
 export function useGroup() {
-    const user = getStoredJson("groupMember");
-    const group = getStoredJson("tripGroup");
+    const user = getStoredJson(STORAGE_KEY.MEMBER);
+    const group = getStoredJson(STORAGE_KEY.TRIP_GROUP);
     // 초대 코드가 없는 경우 주소창의 초대 코드 사용, 없으면 로컬 스토리지의 초대 코드 사용
     // 현재는 테스트 초대코드 사용 (추후 삭제)
-    const inviteCode = new URLSearchParams(window.location.search).get("inviteCode") ?? "test1234abcd"; 
+    const inviteCode = new URLSearchParams(window.location.search).get(URL_PARAM.INVITE_CODE) ?? GROUP_TEST_INVITE_CODE; 
     const tripGroupId = group?.tripGroupId ?? group?.id ?? null; 
 
     const [groupInfo, setGroupInfo] = useState(null);
     const [memberList, setMemberList] = useState(null);
     const [isToNext, setIsToNext] = useState(false);
-    const [nextButtonText, setNextButtonText] = useState(GROUP_NOT_READY_TEXT);
+    const [nextButtonText, setNextButtonText] = useState(GROUP_BUTTON_TEXT.NOT_READY);
 
     useEffect(() => {
-        if (groupInfo && groupInfo.status === "VOTING") {
-            console.log("그룹 상태가 VOTING이 되어 폴링을 중단합니다.");
+        // 백엔드 요구사항 : 그룹 상태가 VOTING인 경우 데이터 조회 불가능
+        if (groupInfo && groupInfo.status === GROUP_STATUS.VOTING) {
+            console.log(GROUP_CONSOLE_MESSAGE.VOTING_STOP_MESSAGE);
             return;
         }
 
         const loadGroupData = async () => {
             if (tripGroupId == null) {
-                console.error("로컬 스토리지에 그룹 ID 정보가 존재하지 않습니다.");
-                setNextButtonText(GROUP_ERROR_TEXT);
+                console.error(GROUP_CONSOLE_MESSAGE.LOCAL_STORAGE_ERROR_MESSAGE);
+                setNextButtonText(GROUP_BUTTON_TEXT.ERROR);
                 return;
             }
 
@@ -43,7 +46,7 @@ export function useGroup() {
                 const result = await fetchGroupsData(tripGroupId, inviteCode);
 
                 if (!result) {
-                    setNextButtonText(GROUP_ERROR_TEXT);
+                    setNextButtonText(GROUP_BUTTON_TEXT.ERROR);
                     return;
                 }
 
@@ -58,48 +61,49 @@ export function useGroup() {
 
                 if (!allSurveyCompleted) {
                     setIsToNext(false);
-                    setNextButtonText(GROUP_NOT_READY_TEXT);
-                } else if (user?.role === "LEADER") {
+                    setNextButtonText(GROUP_BUTTON_TEXT.NOT_READY);
+                } else if (user?.role === GROUP_ROLE.LEADER) {
                     setIsToNext(true);
-                    setNextButtonText(GROUP_LEADER_READY_TEXT);
+                    setNextButtonText(GROUP_BUTTON_TEXT.LEADER_READY);
                 } else {
                     setIsToNext(false);
-                    setNextButtonText(GROUP_MEMBER_READY_TEXT);
+                    setNextButtonText(GROUP_BUTTON_TEXT.MEMBER_READY);
                 }
 
+                // 테스트 코드 (추후 삭제)
                 console.log("그룹 데이터를 성공적으로 불러왔습니다");
                 console.log("멤버 목록 조회 API 주소: ", `/api/v1/trip-groups/${tripGroupId}`);
                 console.log("현재 멤버 목록:", parsedMemberListData);
                 console.log("그룹 정보 조회 API 주소: ", `/api/v1/trip-groups/invite/${inviteCode}`);
                 console.log("현재 그룹 정보:", parsedInvitedGroupData);
             } catch (error) {
-                console.error("데이터를 실시간으로 갱신하는데 실패했습니다:", error);
+                console.error(GROUP_CONSOLE_MESSAGE.LOAD_ERROR_MESSAGE, error);
             }
         };
 
         if (groupInfo === null) {
             loadGroupData();
         } else {
-            const timer = setTimeout(loadGroupData, 3000);
+            const timer = setTimeout(loadGroupData, GROUP_POLLING_INTERVAL);
             return () => clearTimeout(timer);
         }
     }, [groupInfo, inviteCode, tripGroupId, user?.role]);
 
     const isLoading = !groupInfo || !Array.isArray(memberList);
 
-    const copyLink = useCallback(async () => {
-        const targetUrl = `${window.location.origin}/invite/${inviteCode}`;
+    const copyLink = (async () => {
+        const targetUrl = GROUP_INVITE_URL(inviteCode);
         try {
             await navigator.clipboard.writeText(targetUrl);
-            alert("링크가 복사되었습니다.");
+            alert(GROUP_ALERT_MESSAGE.COPY_LINK_SUCCESS);
         } catch {
-            alert("링크 복사에 실패했습니다.");
+            alert(GROUP_ALERT_MESSAGE.COPY_LINK_ERROR);
         }
     }, [inviteCode]);
 
-    const shareKakao = useCallback(async () => {
+    const shareKakao = (async () => {
         if (!inviteCode) {
-            console.error("초대 코드가 없습니다.");
+            console.error(GROUP_CONSOLE_MESSAGE.INVITE_CODE_ERROR_MESSAGE);
             return;
         }
         shareInviteLink({
@@ -108,7 +112,7 @@ export function useGroup() {
         });
     }, [inviteCode, groupInfo?.name]);
 
-    const handleStartAnalysis = useCallback(() => {
+    const handleStartAnalysis = (() => {
         if (!isToNext) return;
         console.log("AI 분석 시작");
     }, [isToNext]);

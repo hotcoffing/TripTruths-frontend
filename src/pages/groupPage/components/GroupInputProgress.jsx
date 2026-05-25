@@ -2,6 +2,8 @@ import style from "./GroupInputProgress.module.scss";
 import LeaderImg from "@/assets/Leader.svg"
 import ParticipantImg from "@/assets/Participant.svg"
 import Button from "@/components/common/Button"
+import { GROUP_INPUT_PROGRESS_TEXT } from "@/constants/groupPageConstants";
+import { GROUP_ROLE } from "@/constants/groupStatus";
 
 // 멤버 설문 완료 여부 확인
 function isMemberSurveyCompleted(member) {
@@ -17,7 +19,7 @@ function isSameMemberId(memberId, myId) {
 }
 
 function GroupInputProgress({myId, memberList, handleMovePage}) {
-    const progressInfoText = "입력 현황";
+    const progressInfoText = GROUP_INPUT_PROGRESS_TEXT.NOW;
     const members = Array.isArray(memberList) ? memberList : [];
     const completeMembers = members.filter(
         // 객체 프로퍼티 명은 DB 내용 참고
@@ -34,30 +36,30 @@ function GroupInputProgress({myId, memberList, handleMovePage}) {
             <div className={style['progress-member-container']}>
                 {members.map((item) => {
                     // 정적 텍스트 내용
-                    const buttonContent = "내 응답 입력하기 →";
-                    const completedText = "완료";
-                    const pendingText = "대기중";
+                    const buttonContent = GROUP_INPUT_PROGRESS_TEXT.NO_COMPLETED;
+                    const completedText = GROUP_INPUT_PROGRESS_TEXT.COMPLETED;
+                    const pendingText = GROUP_INPUT_PROGRESS_TEXT.PENDING;
                     
                     // 유효성 검사 (데이터가 없는 경우 무시)
                     if (item?.memberId == null) {
                         return null;
                     }
 
-                    const nickname = item.nickname ?? "이름 없음 (오류)";
+                    const nickname = item.nickname ?? GROUP_INPUT_PROGRESS_TEXT.NO_NICKNAME;
                     const role = item.role;
                     const isCompleted = isMemberSurveyCompleted(item);
                     const isMe = isSameMemberId(item.memberId, myId);
 
                     // 이미지 소스 변환
                     let imgSrc = ParticipantImg;
-                    if (role === "LEADER") {
+                    if (role === GROUP_ROLE.LEADER) {
                         imgSrc = LeaderImg;
                     }
 
                     // 변환 내용
                     let memberName = nickname;
                     if (isMe) {
-                        memberName = nickname + " (나)";
+                        memberName = nickname + GROUP_INPUT_PROGRESS_TEXT.IS_ME;
                     }
 
                     const renderMemberStatus = () => {

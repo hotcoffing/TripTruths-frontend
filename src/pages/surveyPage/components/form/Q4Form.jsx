@@ -2,6 +2,7 @@ import style from './Q4Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveySlider from '@/pages/surveyPage/components/feat/SurveySlider';
 import Button from '@/components/common/Button';
+import { SURVEY_FORM_NAME } from '@/constants/surveyFormName';
 
 function Q4Form({ 
         currentCharge,      // 슬라이더 현재 값
@@ -12,7 +13,7 @@ function Q4Form({
 
     return (
         <div className={style['Q4-container']}>
-            <SurveyInfo type="Q4" />
+            <SurveyInfo type={SURVEY_FORM_NAME.Q4} />
 
             <div className={style['slider-area']}>
                 <SurveySlider 
@@ -33,7 +34,7 @@ function Q4Form({
                     size="md"
                     content="다음"
                     isActive={true} 
-                    onClick={() => handleIsNext("Q5", currentCharge)}
+                    onClick={() => handleIsNext(SURVEY_FORM_NAME.Q5, currentCharge)}
                 />
             </div>
         </div>

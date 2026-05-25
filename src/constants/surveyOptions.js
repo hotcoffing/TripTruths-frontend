@@ -28,7 +28,7 @@ export const SURVEY_TAGS = [
 export const getSurveySelectOptionsByQuestion = (questionId) =>
     SURVEY_SELECT_OPTIONS.filter((item) => item.id.startsWith(questionId));
 
-/** survey_mood.mood_type */
+// Q1 옵션 ID 매핑
 export const MOOD_TYPE_BY_OPTION_ID = {
     Q1_1: 'ACTIVITY',
     Q1_2: 'RELAXATION',
@@ -38,7 +38,7 @@ export const MOOD_TYPE_BY_OPTION_ID = {
     Q1_6: 'ENTERTAINMENT',
 };
 
-/** survey_activity.activity_type */
+// Q2 옵션 ID 매핑
 export const ACTIVITY_TYPE_BY_OPTION_ID = {
     Q2_1: 'OCEAN',
     Q2_2: 'MOUNTAIN_NATURE',

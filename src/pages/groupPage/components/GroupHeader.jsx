@@ -1,12 +1,5 @@
 import style from "./GroupHeader.module.scss"
-
-// trip_group.trip_length ENUM → 표시 문구 (triptruth.sql)
-const TRIP_LENGTH_LABELS = {
-    DAY_TRIP: "당일",
-    ONE_NIGHT: "1박 2일",
-    TWO_NIGHTS: "2박 3일",
-    THREE_NIGHTS_PLUS: "3박 4일 이상",
-};
+import { GROUP_HEADER_TRIP_DAYS, GROUP_HEADER_TEXT } from "@/constants/groupPageConstants";
 
 // 날짜 객체를 'YYYY.MM.DD' 형식으로 변환해주는 헬퍼 함수
 const formatDate = (dateInput) => {
@@ -31,16 +24,27 @@ function GroupHeader({groupName, tripLength, startDate = null, endDate = null}) 
         duration = `/ ${formatDate(startDate)} ~ ${formatDate(endDate)}`;
     }
 
-    let tripLengthLabel = "일정 미정";
-    if (tripLength != null && TRIP_LENGTH_LABELS[tripLength]) {
-        tripLengthLabel = TRIP_LENGTH_LABELS[tripLength];
-    } else if (tripLength === 2 || tripLength === "2") {
-        // API가 숫자 일수만 내려주는 경우 (레거시)
-        tripLengthLabel = "1박 2일";
+    let tripLengthLabel = "";
+    switch (tripLength) {
+        case GROUP_HEADER_TRIP_DAYS[0]:
+            tripLengthLabel = GROUP_HEADER_TEXT.DAY_TRIP;
+            break;
+        case GROUP_HEADER_TRIP_DAYS[1]:
+            tripLengthLabel = GROUP_HEADER_TEXT.ONE_NIGHT;
+            break;
+        case GROUP_HEADER_TRIP_DAYS[2]:
+            tripLengthLabel = GROUP_HEADER_TEXT.TWO_NIGHTS;
+            break;
+        case GROUP_HEADER_TRIP_DAYS[3]:
+            tripLengthLabel = GROUP_HEADER_TEXT.THREE_NIGHTS_PLUS;
+            break;
+        default:
+            tripLengthLabel = GROUP_HEADER_TEXT.DEFAULT;
+            break;
     }
 
-    let displayGroupName = "그룹";
-    if (groupName != null && groupName !== "") {
+    let displayGroupName = GROUP_HEADER_TEXT.DEFAULT_GROUP_NAME;
+    if (groupName != null && groupName !== "" && groupName !== GROUP_HEADER_TEXT.DEFAULT_GROUP_NAME) {
         displayGroupName = groupName;
     }
 

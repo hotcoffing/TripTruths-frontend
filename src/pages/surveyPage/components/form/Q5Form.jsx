@@ -2,6 +2,7 @@ import style from './Q5Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
 import Button from '@/components/common/Button';
+import { SURVEY_FORM_NAME } from '@/constants/surveyFormName';
 
 function Q5Form({ 
         text,               // Q5 텍스트 내용
@@ -12,7 +13,7 @@ function Q5Form({
 
     return (
         <div className={style['Q5-container']}>
-            <SurveyInfo type="Q5" />
+            <SurveyInfo type={SURVEY_FORM_NAME.Q5} />
             
             <div className={style['content-area']}>
                 <div className={style['textbox-area']}>
@@ -36,7 +37,7 @@ function Q5Form({
                     size="md"
                     content="제출하기"
                     isActive={true} // 텍스트 입력 여부에 따라 활성화 여부 결정
-                    onClick={() => handleIsNext("SUBMIT", text)}
+                    onClick={() => handleIsNext(SURVEY_FORM_NAME.SUBMIT, text)}
                 />
             </div>
         </div>
