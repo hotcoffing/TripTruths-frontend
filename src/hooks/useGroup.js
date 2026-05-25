@@ -17,8 +17,9 @@ export function useGroup() {
     const user = getStoredJson("groupMember");
     const group = getStoredJson("tripGroup");
     // 초대 코드가 없는 경우 주소창의 초대 코드 사용, 없으면 로컬 스토리지의 초대 코드 사용
-    const inviteCode = new URLSearchParams(window.location.search).get("inviteCode") ?? group?.inviteCode;
-    const tripGroupId = group?.id ?? null; 
+    // 현재는 테스트 초대코드 사용 (추후 삭제)
+    const inviteCode = new URLSearchParams(window.location.search).get("inviteCode") ?? "test1234abcd"; 
+    const tripGroupId = group?.tripGroupId ?? group?.id ?? null; 
 
     const [groupInfo, setGroupInfo] = useState(null);
     const [memberList, setMemberList] = useState(null);
@@ -39,16 +40,16 @@ export function useGroup() {
             }
 
             try {
-                const result = await fetchGroupsData(inviteCode, tripGroupId);
+                const result = await fetchGroupsData(tripGroupId, inviteCode);
 
                 if (!result) {
                     setNextButtonText(GROUP_ERROR_TEXT);
                     return;
                 }
 
-                const { groupInfo: parsedInviteData, memberList: parsedMemberListData } = result;
+                const { memberList: parsedMemberListData, groupInfo: parsedInvitedGroupData } = result;
 
-                setGroupInfo(parsedInviteData);
+                setGroupInfo(parsedInvitedGroupData);
                 setMemberList(parsedMemberListData);
 
                 const allSurveyCompleted =
@@ -65,6 +66,12 @@ export function useGroup() {
                     setIsToNext(false);
                     setNextButtonText(GROUP_MEMBER_READY_TEXT);
                 }
+
+                console.log("그룹 데이터를 성공적으로 불러왔습니다");
+                console.log("멤버 목록 조회 API 주소: ", `/api/v1/trip-groups/${tripGroupId}`);
+                console.log("현재 멤버 목록:", parsedMemberListData);
+                console.log("그룹 정보 조회 API 주소: ", `/api/v1/trip-groups/invite/${inviteCode}`);
+                console.log("현재 그룹 정보:", parsedInvitedGroupData);
             } catch (error) {
                 console.error("데이터를 실시간으로 갱신하는데 실패했습니다:", error);
             }
@@ -105,6 +112,7 @@ export function useGroup() {
         if (!isToNext) return;
         console.log("AI 분석 시작");
     }, [isToNext]);
+
 
     return {
         user,
