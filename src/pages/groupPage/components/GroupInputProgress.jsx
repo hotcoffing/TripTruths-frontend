@@ -4,14 +4,9 @@ import ParticipantImg from "@/assets/Participant.svg"
 import Button from "@/components/common/Button"
 import { GROUP_INPUT_PROGRESS_TEXT } from "@/constants/groupPageConstants";
 import { GROUP_ROLE } from "@/constants/groupStatus";
-import { useGroup } from "@/hooks/useGroup";
+import { isMemberSurveyCompleted, isSameMemberId } from "@/hooks/useGroup";
 
 function GroupInputProgress({myId, memberList, handleMovePage}) {
-    const {
-        isMemberSurveyCompleted,
-        isSameMemberId,
-    } = useGroup();
-    
     const progressInfoText = GROUP_INPUT_PROGRESS_TEXT.NOW;
     const members = Array.isArray(memberList) ? memberList : [];
     const completeMembers = members.filter(
