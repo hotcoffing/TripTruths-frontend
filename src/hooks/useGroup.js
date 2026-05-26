@@ -16,12 +16,16 @@ function isMemberSurveyCompleted(member) {
 }
 
 export function useGroup() {
-    const user = getStoredJson(STORAGE_KEY.MEMBER);
-    const group = getStoredJson(STORAGE_KEY.TRIP_GROUP);
     // 초대 코드가 없는 경우 주소창의 초대 코드 사용, 없으면 로컬 스토리지의 초대 코드 사용
     // 현재는 테스트 초대코드 사용 (추후 삭제)
-    const inviteCode = new URLSearchParams(window.location.search).get(URL_PARAM.INVITE_CODE) ?? GROUP_TEST_INVITE_CODE; 
-    const tripGroupId = group?.tripGroupId ?? group?.id ?? null; 
+    const inviteCode = new URLSearchParams(window.location.search).get(URL_PARAM.INVITE_CODE) ?? "18250208056a"; 
+
+    const data = getStoredJson(inviteCode ?? null);
+    const user = {
+        memberId: data?.id ?? data?.memberId ?? null,
+        role: data?.role ?? null,
+    }
+    const tripGroupId = data?.tripGroupId ?? null; 
 
     const [groupInfo, setGroupInfo] = useState(null);
     const [memberList, setMemberList] = useState(null);
