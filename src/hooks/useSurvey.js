@@ -163,7 +163,7 @@ export function useSurvey() {
             setIsError(false);
 
             // 다음 버튼 활성화 여부 판단 (선택된 버튼이 있는 경우 활성화)
-            setIsToNext(isToNextEnabledForForm(nowForm, updatedList, q2SelectedList));
+            setIsToNext(updatedList.length > 0);
 
             return updatedList;
         });
@@ -218,7 +218,7 @@ export function useSurvey() {
             }
 
             // 그룹 진행 현황 페이지로 이동
-            navigate(`/group/${inviteCode}`);
+            navigate(`/group/${inviteCode}`, { state: { surveySubmitted: true } });
             
             return;
         }

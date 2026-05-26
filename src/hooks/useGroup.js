@@ -4,11 +4,26 @@ import { shareInviteLink } from "@/utils/kakaoShare";
 import { getStoredJson } from "@/utils/getStorage";
 import { GROUP_BUTTON_TEXT, GROUP_POLLING_INTERVAL, GROUP_INVITE_URL, GROUP_CONSOLE_MESSAGE, GROUP_ALERT_MESSAGE } from "@/constants/groupHooksConstants";
 import { GROUP_STATUS, GROUP_ROLE } from "@/constants/groupStatus";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function isMemberSurveyCompleted(member) {
-    if (member.surveyCompleted === true) return true;
-    return false;
+    return member.surveyCompleted === true || member.surveyCompleted === 1;
+}
+
+function isSameMemberId(memberId, myId) {
+    if (myId == null || memberId == null) {
+        return false;
+    }
+    return Number(memberId) === Number(myId);
+}
+
+function applyMySurveyCompleted(memberList, memberId) {
+    if (!Array.isArray(memberList)) return memberList;
+    return memberList.map((member) =>
+        isSameMemberId(member.memberId, memberId)
+            ? { ...member, surveyCompleted: true }
+            : member
+    );
 }
 
 export function useGroup() {
@@ -16,6 +31,7 @@ export function useGroup() {
     // 현재는 테스트 초대코드 사용 (추후 삭제)
     const { inviteCode } = useParams(); 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const data = getStoredJson(inviteCode ?? null);
     const user = {
@@ -30,6 +46,13 @@ export function useGroup() {
     const [nextButtonText, setNextButtonText] = useState(GROUP_BUTTON_TEXT.NOT_READY);
 
     useEffect(() => {
+        const surveySubmitted = location.state?.surveySubmitted === true;
+
+        if (surveySubmitted) {
+            setMemberList((prev) => applyMySurveyCompleted(prev, user.memberId));
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+
         // 백엔드 요구사항 : 그룹 상태가 VOTING인 경우 데이터 조회 불가능
         if (groupInfo && groupInfo.status === GROUP_STATUS.VOTING) {
             console.log(GROUP_CONSOLE_MESSAGE.VOTING_STOP_MESSAGE);
@@ -56,16 +79,19 @@ export function useGroup() {
 
                 // 정규화된 그룹 데이터 설정
                 const { memberList: parsedMemberListData, groupInfo: parsedInvitedGroupData } = result;
+                const membersToSet = surveySubmitted
+                    ? applyMySurveyCompleted(parsedMemberListData, user.memberId)
+                    : parsedMemberListData;
 
                 // 그룹 정보 설정
                 setGroupInfo(parsedInvitedGroupData);
                 // 멤버 목록 설정
-                setMemberList(parsedMemberListData);
+                setMemberList(membersToSet);
 
                 // 모든 멤버의 설문 완료 여부 확인
                 const allSurveyCompleted =
-                    parsedMemberListData.length ===
-                    parsedMemberListData.filter((member) => isMemberSurveyCompleted(member)).length;
+                    membersToSet.length ===
+                    membersToSet.filter((member) => isMemberSurveyCompleted(member)).length;
 
                 // 모든 멤버의 설문 완료 여부 확인 결과에 따른 버튼 텍스트 설정
                 if (!allSurveyCompleted) {
@@ -90,16 +116,18 @@ export function useGroup() {
             }
         };
 
-        // 그룹 정보가 없는 경우 그룹 데이터 조회
-        if (groupInfo === null) {
+        const shouldFetchImmediately = groupInfo === null || surveySubmitted;
+
+        // 그룹 정보가 없거나 설문 완료 여부에 따라 그룹 데이터 조회
+        if (groupInfo === null || surveySubmitted) {
             loadGroupData();
         } 
         // 백엔드 요구사항 : 그룹 정보가 있는 경우 그룹 데이터 3초마다 조회
-        else {
+        else if (groupInfo !== null) {
             const timer = setTimeout(loadGroupData, GROUP_POLLING_INTERVAL);
             return () => clearTimeout(timer);
         }
-    }, [groupInfo, inviteCode, tripGroupId, user?.role]);
+    }, [groupInfo, inviteCode, tripGroupId, user?.memberId, user?.role, location.pathname, navigate]);
 
     // 그룹 정보가 없거나 멤버 목록이 없는 경우 로딩 중
     const isLoading = !groupInfo || !Array.isArray(memberList);
@@ -121,15 +149,20 @@ export function useGroup() {
             console.error(GROUP_CONSOLE_MESSAGE.INVITE_CODE_ERROR_MESSAGE);
             return;
         }
+
         shareInviteLink({
             inviteCode,
             groupName: groupInfo?.name,
         });
     }
 
-    // 설문조사 페이지로 이동 (다음 버튼 클릭 시 실행)
+    // 설문조사 페이지로 이동 (미완료 본인만)
     const handleMoveSurveyPage = () => {
-        if (inviteCode) {
+        const me = memberList?.find(
+            (member) => isSameMemberId(member.memberId, user?.memberId)
+        );
+        
+        if (inviteCode && me && !isMemberSurveyCompleted(me)) {
             navigate(`/survey/${inviteCode}`);
         }
     }
@@ -154,5 +187,7 @@ export function useGroup() {
         shareKakao,
         handleMoveSurveyPage,
         handleStartAnalysis,
+        isMemberSurveyCompleted,
+        isSameMemberId,
     };
 }
