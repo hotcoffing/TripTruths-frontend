@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { setStoredJson } from '@/utils/setStorage';
 import { getStoredJson } from '@/utils/getStorage';
 import { postSurveyData } from '@/apis/tripSurveysApi';
@@ -13,6 +13,55 @@ import { STORAGE_KEY } from '@/constants/storageKey';
 function formatBudget(manWon) {
     const amount = parseInt(manWon) * 10000;
     return amount.toString();
+}
+
+const DEFAULT_Q3 = { text: '', selectedTags: [] };
+
+function nowFormSaved() {
+    return getStoredJson(STORAGE_KEY.SURVEY_NOW_FORM);
+}
+
+// 저장된 현재 폼 기준으로 이어서 진행할 폼 결정
+function resolveResumeForm() {
+    if (nowFormSaved() === SURVEY_FORM_NAME.Q1) return SURVEY_FORM_NAME.Q1;
+    else if (nowFormSaved() === SURVEY_FORM_NAME.Q2) return SURVEY_FORM_NAME.Q2;
+    else if (nowFormSaved() === SURVEY_FORM_NAME.Q3) return SURVEY_FORM_NAME.Q3;
+    else if (nowFormSaved() === SURVEY_FORM_NAME.Q4) return SURVEY_FORM_NAME.Q4;
+    else if (nowFormSaved() === SURVEY_FORM_NAME.Q5) return SURVEY_FORM_NAME.Q5;
+    return SURVEY_FORM_NAME.Q1;
+}
+
+// Q1Form·Q2Form — 선택형은 항목이 있을 때만 다음 버튼 활성화
+function isToNextEnabledForForm(formName, q1SelectedList, q2SelectedList) {
+    if (formName === SURVEY_FORM_NAME.Q1) return q1SelectedList.length > 0;
+    if (formName === SURVEY_FORM_NAME.Q2) return q2SelectedList.length > 0;
+    return true;
+}
+
+// 새로고침 시 로컬 스토리지 → Q1~Q5 폼 상태 복원
+export function restoreSurveyFromLocalStorage() {
+    const q1SelectedList = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q1)) ?? [];
+    const q2SelectedList = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q2)) ?? [];
+    const q3Stored = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q3)) ?? DEFAULT_Q3;
+    const currentCharge = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q4)) ?? 10;
+    const q5Text = getStoredJson(STORAGE_KEY.SURVEY_FORM(SURVEY_FORM_NAME.Q5)) ?? '';
+
+    const q3Text = q3Stored?.text ?? '';
+    const selectedTags = Array.isArray(q3Stored?.selectedTags) ? q3Stored.selectedTags : [];
+    const nowForm = resolveResumeForm();
+    const normalizedQ1 = Array.isArray(q1SelectedList) ? q1SelectedList : [];
+    const normalizedQ2 = Array.isArray(q2SelectedList) ? q2SelectedList : [];
+
+    return {
+        nowForm,
+        q1SelectedList: normalizedQ1,
+        q2SelectedList: normalizedQ2,
+        q3Text,
+        q5Text: typeof q5Text === 'string' ? q5Text : '',
+        currentCharge: typeof currentCharge === 'number' ? currentCharge : 10,
+        selectedTags,
+        isToNext: isToNextEnabledForForm(nowForm, normalizedQ1, normalizedQ2),
+    };
 }
 
 // API 제출 body
@@ -67,6 +116,18 @@ export function useSurvey() {
     // 태그 버튼 선택 상태 관리
     const [selectedTags, setSelectedTags] = useState([]);
 
+    useEffect(() => {
+        const restored = restoreSurveyFromLocalStorage();
+        setNowForm(restored.nowForm);
+        setQ1SelectedList(restored.q1SelectedList);
+        setQ2SelectedList(restored.q2SelectedList);
+        setQ3Text(restored.q3Text);
+        setQ5Text(restored.q5Text);
+        setCurrentCharge(restored.currentCharge);
+        setSelectedTags(restored.selectedTags);
+        setIsToNext(restored.isToNext);
+    }, []);
+
     // 최대 Q1, Q2 버튼 리스트 선택 핸들러
     const handleButtonClick = (Obj, count) => {
         const isQ1 = nowForm === SURVEY_FORM_NAME.Q1;
@@ -95,7 +156,7 @@ export function useSurvey() {
             setIsError(false);
 
             // 다음 버튼 활성화 여부 판단 (선택된 버튼이 있는 경우 활성화)
-            setIsToNext(updatedList.length > 0);
+            setIsToNext(isToNextEnabledForForm(nowForm, updatedList, q2SelectedList));
 
             return updatedList;
         });
@@ -113,6 +174,7 @@ export function useSurvey() {
 
     // 이전 버튼을 누르는 경우의 핸들러
     const handlePrev = (targetForm) => {
+        setStoredJson(STORAGE_KEY.SURVEY_NOW_FORM, targetForm);
         setNowForm(targetForm);
         setIsError(false);
         setIsToNext(true);
@@ -147,6 +209,7 @@ export function useSurvey() {
         }
 
         // 유효하다면 다음 폼으로 이동
+        setStoredJson(STORAGE_KEY.SURVEY_NOW_FORM, targetForm);
         setNowForm(targetForm);
         setIsError(false);
 
