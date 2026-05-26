@@ -18,6 +18,7 @@ const CreateGroupPage = () => {
     tripPeriod,
     isNicknameValid,
     isTripNameValid,
+    isLoading,
     nicknameVariant,
     tripNameVariant,
     setCalendarMonth,
@@ -62,7 +63,7 @@ const CreateGroupPage = () => {
         <Button
           type={isFirstStep ? 'button' : 'submit'}
           variant={isCurrentStepValid ? 'brand' : 'muted'}
-          disabled={!isCurrentStepValid}
+          disabled={!isCurrentStepValid || isLoading}
           onClick={() => {
             if (isFirstStep) {
               navigate('/group/create/2');

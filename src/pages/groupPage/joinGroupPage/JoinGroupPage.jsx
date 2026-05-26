@@ -1,20 +1,17 @@
 import Button from '@/components/common/button/Button';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import NicknameStep from '../createGroupPage/components/NicknameStep';
 import styles from './JoinGroupPage.module.scss';
-import { getFieldVariant, isValidNickname } from '@/utils/GroupFormUtils';
+import { useJoinGroupForm } from './hooks/useJoinGroupForm';
 
 const JoinGroupPage = () => {
-  const navigate = useNavigate();
-  const [nickname, setNickname] = useState('');
-
-  const isNicknameValid = isValidNickname(nickname);
-  const nicknameVariant = getFieldVariant(nickname, isNicknameValid);
-
-  const handleSubmit = () => {
-    console.log(nickname);
-  };
+  const {
+    nickname,
+    setNickname,
+    isLoading,
+    isNicknameValid,
+    nicknameVariant,
+    handleSubmit,
+  } = useJoinGroupForm();
 
   return (
     <form onSubmit={handleSubmit} className={styles['create-group-page']}>
@@ -39,10 +36,7 @@ const JoinGroupPage = () => {
         <Button
           type="submit"
           variant={isNicknameValid ? 'brand' : 'muted'}
-          disabled={!isNicknameValid}
-          onClick={() => {
-            navigate('/');
-          }}
+          disabled={!isNicknameValid || isLoading}
         >
           다음
         </Button>

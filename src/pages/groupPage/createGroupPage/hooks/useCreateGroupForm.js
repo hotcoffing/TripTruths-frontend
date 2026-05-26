@@ -17,10 +17,11 @@ import {
   getInitialFormState,
   hasAtLeastTwoHangulCharacters,
   isValidNickname,
-} from '../../../../utils/GroupFormUtils';
+} from '@/utils/groupFormUtils.js';
 import { createGroup } from '@/apis/groupApi';
+import { storage } from '@/utils/storage';
 
-export function useCreateGroupForm() {
+export const useCreateGroupForm = () => {
   // 폼 payload 전체를 단일 상태로 관리합니다.
   const [form, setForm] = useState(getInitialFormState);
   // 저장된 날짜가 있으면 해당 월부터 캘린더를 열 수 있게 초기 월을 맞춥니다.
@@ -38,6 +39,7 @@ export function useCreateGroupForm() {
     return getCurrentMonthStart();
   });
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 입력값이 바뀔 때마다 sessionStorage에 동기화합니다.
   useEffect(() => {
@@ -101,14 +103,32 @@ export function useCreateGroupForm() {
   // 최종 payload를 서버로 전송하고 성공 시 세션 데이터를 정리합니다.
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    if (isLoading) return; //버튼 연속 입력 방지
 
     try {
-      const results = await createGroup(form);
-      console.log(results);
+      setIsLoading(true);
+
+      const response = await createGroup(form);
+      console.log(response);
+
+      if (!response.isSuccess) throw Error;
+
+      const result = response.result;
+      //로컬스토리지 값 저장
+      storage.set(result.inviteCode, {
+        tripGroupId: result.tripGroupId,
+        memberId: result.leaderMemberId,
+        nickname: result.leaderNickname,
+      });
+
+      //세션스토리지 값 삭제
       sessionStorage.removeItem(SESSION_KEY);
+
+      //여기에 진행현황 페이지 라우팅 코드
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,6 +144,7 @@ export function useCreateGroupForm() {
     tripPeriod,
     isNicknameValid,
     isTripNameValid,
+    isLoading,
     nicknameVariant: getFieldVariant(form.leaderNickname, isNicknameValid),
     tripNameVariant: getFieldVariant(form.name, isTripNameValid),
     setCalendarMonth,
@@ -134,4 +155,4 @@ export function useCreateGroupForm() {
     handleSelectDate,
     handleSubmit,
   };
-}
+};

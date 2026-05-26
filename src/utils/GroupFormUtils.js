@@ -4,8 +4,8 @@ import {
   TRIP_LENGTH_BY_PERIOD,
 } from '../pages/groupPage/createGroupPage/constants/createGroupFormConstants';
 
-const HANGUL_CHARACTER_PATTERN = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
-const NICKNAME_ALLOWED_PATTERN = /^[A-Za-zㄱ-ㅎㅏ-ㅣ가-힣]+$/;
+const HANGUL_CHARACTER_PATTERN = /[가-힣]/g;
+const NICKNAME_ALLOWED_PATTERN = /^[A-Za-z가-힣]+$/;
 
 // 그룹 생성 폼의 기본 payload 형태를 반환합니다.
 export const getDefaultFormState = () => ({

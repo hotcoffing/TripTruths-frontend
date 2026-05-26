@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       },
       { path: '/survey', element: <SurveyPage /> },
       { path: '/group/create/:step', element: <CreateGroupPage /> },
-      { path: '/group/join', element: <JoinGroupPage /> },
+      { path: '/group/join/:inviteCode', element: <JoinGroupPage /> },
     ],
   },
 ]);
