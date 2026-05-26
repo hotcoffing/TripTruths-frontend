@@ -46,17 +46,28 @@ export function useGroup() {
     const [nextButtonText, setNextButtonText] = useState(GROUP_BUTTON_TEXT.NOT_READY);
 
     useEffect(() => {
+        // 그룹 진행 정보 상태에 따라 타 페이지로 라우팅
+        if (groupInfo?.status) {
+            if (groupInfo.status === GROUP_STATUS.ANALYZING) {
+                navigate(`/analysis/${inviteCode}`);
+                return;
+            } else if (groupInfo.status === GROUP_STATUS.VOTING) {
+                navigate(`/results/${inviteCode}`);
+                return;
+            }  else if (groupInfo.status === GROUP_STATUS.FAILED) {
+                navigate(`/results/e/${inviteCode}`);
+                return;
+            } else if (groupInfo.status === GROUP_STATUS.COMPLETED) {
+                navigate(`/final/${inviteCode}`);
+                return;
+            }
+        }
+
         const surveySubmitted = location.state?.surveySubmitted === true;
 
         if (surveySubmitted) {
             setMemberList((prev) => applyMySurveyCompleted(prev, user.memberId));
             navigate(location.pathname, { replace: true, state: {} });
-        }
-
-        // 백엔드 요구사항 : 그룹 상태가 VOTING인 경우 데이터 조회 불가능
-        if (groupInfo && groupInfo.status === GROUP_STATUS.VOTING) {
-            console.log(GROUP_CONSOLE_MESSAGE.VOTING_STOP_MESSAGE);
-            return;
         }
 
         const loadGroupData = async () => {
