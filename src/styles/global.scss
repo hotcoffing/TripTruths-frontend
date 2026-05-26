@@ -1,5 +1,13 @@
 @use './typography';
 
+@font-face {
+  font-family: 'KerisKedyuche';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-3@1.0/KERISKEDU_B.woff2')
+    format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -27,10 +35,13 @@
 
   /* Product voice: clear Korean UI readability with slightly warmer headings. */
   --font-family-body:
-    'Pretendard Variable', Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo',
-    'Malgun Gothic', sans-serif;
+    Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic',
+    sans-serif;
   --font-family-display:
     'SUIT Variable', 'Pretendard Variable', Pretendard, 'Noto Sans KR',
+    sans-serif;
+  --font-family-title:
+    'KerisKedyuche', 'Pretendard Variable', Pretendard, 'Noto Sans KR',
     sans-serif;
 
   --font-size-display: 2rem;
