@@ -13,25 +13,10 @@ import Q5Form from '@/pages/surveyPage/components/form/Q5Form';
 import { useSurvey } from '@/hooks/useSurvey';
 
 // 정적 데이터
-const allSelectButton = [
-    { id: "Q1_1", content: "🏃 엑티비티" },
-    { id: "Q1_2", content: "🌴 휴양" },
-    { id: "Q1_3", content: "🏛 문화/관광" },
-    { id: "Q1_4", content: "🍽️ 맛집" },
-    { id: "Q1_5", content: "📸 감성/사진" },
-    { id: "Q1_6", content: "🎡 놀거리" },
-    { id: "Q2_1", content: "🌊 바다" },
-    { id: "Q2_2", content: "⛰️ 산/자연" },
-    { id: "Q2_3", content: "🏙️ 도시 탐험" },
-    { id: "Q2_4", content: "☕ 카페 투어" },
-    { id: "Q2_5", content: "🛍️ 쇼핑" },
-    { id: "Q2_6", content: "🌃 야경" },
-];
+import { SURVEY_TAGS, getSurveySelectOptionsByQuestion } from '@/constants/surveyOptions';
 
-const tags = [
-    "새벽 출발", "비행기", "등산", "과음", 
-    "멀미", "매운 음식", "벌레", "장거리 이동"
-];
+// 상수
+import { SURVEY_FORM_NAME } from '@/constants/surveyFormName';
 
 function SurveyPage() {
     const {
@@ -53,48 +38,49 @@ function SurveyPage() {
     // 폼 렌더링
     const renderForm = () => {
         switch (nowForm) {
-            case "Q1":
+            case SURVEY_FORM_NAME.Q1:
                 return (<Q1Form
                     isError={isError} 
                     isToNext={isToNext}
-                    selectList={allSelectButton.filter((item) => item.id.startsWith("Q1"))} 
+                    selectList={getSurveySelectOptionsByQuestion(SURVEY_FORM_NAME.Q1)} 
                     nowSelectedList={q1SelectedList} 
+                    nextSelectedList={q2SelectedList} 
                     handleSelect={handleButtonClick} 
                     handleIsNext={handleSubmit} 
                 />);
-            case "Q2": 
+            case SURVEY_FORM_NAME.Q2: 
                 return (<Q2Form
                     isError={isError} 
                     isToNext={isToNext}
-                    selectList={allSelectButton.filter((item) => item.id.startsWith("Q2"))} 
+                    selectList={getSurveySelectOptionsByQuestion(SURVEY_FORM_NAME.Q2)} 
                     nowSelectedList={q2SelectedList} 
                     handleSelect={handleButtonClick} 
                     handleIsNext={handleSubmit} 
-                    handlePrev={() => handlePrev("Q1")}
+                    handlePrev={() => handlePrev(SURVEY_FORM_NAME.Q1)}
                 />);
-            case "Q3": 
+            case SURVEY_FORM_NAME.Q3: 
                 return (<Q3Form
                     text={q3Text}
                     setText={setQ3Text}
-                    tags={tags}
+                    tags={SURVEY_TAGS}
                     selectedTags={selectedTags}
                     handleTagClick={handleTagClick}
                     handleIsNext={handleSubmit}
-                    handlePrev={() => handlePrev("Q2")}
+                    handlePrev={() => handlePrev(SURVEY_FORM_NAME.Q2)}
                 />);
-            case "Q4": 
+            case SURVEY_FORM_NAME.Q4: 
                 return (<Q4Form
                     currentCharge={currentCharge}
                     setCurrentCharge={setCurrentCharge}
                     handleIsNext={handleSubmit}
-                    handlePrev={() => handlePrev("Q3")}
+                    handlePrev={() => handlePrev(SURVEY_FORM_NAME.Q3)}
                 />);
-            case "Q5": 
+            case SURVEY_FORM_NAME.Q5: 
                 return (<Q5Form
                     text={q5Text}
                     setText={setQ5Text}
                     handleIsNext={handleSubmit}
-                    handlePrev={() => handlePrev("Q4")}
+                    handlePrev={() => handlePrev(SURVEY_FORM_NAME.Q4)}
                 />);
 
             default:
@@ -105,7 +91,9 @@ function SurveyPage() {
 
     return (
         <div className={style['page-container']}>
-            <SurveyProgressBar step={nowForm} />
+            <div className={style['tier-progress']}>
+                <SurveyProgressBar step={nowForm} />
+            </div>
             <div className={style['form-wrapper']}>
                 {renderForm()}
             </div>

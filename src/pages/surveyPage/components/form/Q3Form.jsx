@@ -1,8 +1,8 @@
 import style from './Q3Form.module.scss';
 import SurveyInfo from '@/pages/surveyPage/components/feat/SurveyInfo';
 import SurveyTextBox from '@/pages/surveyPage/components/feat/SurveyTextBox';
-import Button from '@/pages/surveyPage/components/feat/SurveyButton';
-import RepeatBr from '@/components/RepeatBr';
+import Button from '@/components/common/Button';
+import { SURVEY_FORM_NAME } from '@/constants/surveyFormName';
 
 function Q3Form({ 
         text,               // 텍스트 박스 내용
@@ -16,10 +16,9 @@ function Q3Form({
 
     return (
         <div className={style['Q3-container']}>
-            <SurveyInfo type="Q3" />
+            <SurveyInfo type={SURVEY_FORM_NAME.Q3} />
             
             <div className={style['content-area']}>
-                <RepeatBr count={2} />
                 <SurveyTextBox 
                     text={text}
                     setText={setText}
@@ -33,7 +32,7 @@ function Q3Form({
                             <Button
                                 key={tag}
                                 type="tag"
-                                size="sm"
+                                size="auto-sm"
                                 content={tag}
                                 isSelected={selectedTags.includes(tag)}
                                 onClick={() => handleTagClick(tag)}
@@ -41,8 +40,6 @@ function Q3Form({
                         ))}
                     </div>
                 </div>
-
-                <RepeatBr count={1} />
             </div>
 
             <div className={style['action-container']}>
@@ -57,7 +54,7 @@ function Q3Form({
                     size="md"
                     content="다음"
                     isActive={true} // 입력형은 일단 항상 다음으로 넘어갈 수 있게 (사용자 확인 기반)
-                    onClick={() => handleIsNext("Q4", { text, selectedTags })}
+                    onClick={() => handleIsNext(SURVEY_FORM_NAME.Q4, { text, selectedTags })}
                 />
             </div>
         </div>
