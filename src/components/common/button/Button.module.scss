@@ -29,6 +29,12 @@
   color: #848b9c;
 }
 
+.button--surface-muted {
+  border: 2px solid #e2e2e2;
+  background: var(--, #f2f2f2);
+  color: #848b9c;
+}
+
 .button--disabled,
 .button:disabled {
   cursor: not-allowed;
