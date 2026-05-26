@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchGroupsData } from "@/apis/tripGroupsApi";
 import { shareInviteLink } from "@/utils/kakaoShare";
 import { getStoredJson } from "@/utils/getStorage";
@@ -104,7 +104,7 @@ export function useGroup() {
     const isLoading = !groupInfo || !Array.isArray(memberList);
 
     // 초대 링크 복사
-    const copyLink = useCallback(async () => {
+    const copyLink = async () => {
         const targetUrl = GROUP_INVITE_URL(inviteCode);
         try {
             await navigator.clipboard.writeText(targetUrl);
@@ -112,10 +112,10 @@ export function useGroup() {
         } catch {
             alert(GROUP_ALERT_MESSAGE.COPY_LINK_ERROR);
         }
-    }, [inviteCode]);
+    }
 
     // 초대 링크 카카오 공유
-    const shareKakao = useCallback(async () => {
+    const shareKakao = async () => {
         if (!inviteCode) {
             console.error(GROUP_CONSOLE_MESSAGE.INVITE_CODE_ERROR_MESSAGE);
             return;
@@ -124,13 +124,13 @@ export function useGroup() {
             inviteCode,
             groupName: groupInfo?.name,
         });
-    }, [inviteCode, groupInfo?.name]);
+    }
 
     // AI 분석 시작 (다음 버튼 클릭 시 실행 / 아직 미구현)
-    const handleStartAnalysis = useCallback(() => {
+    const handleStartAnalysis = () => {
         if (!isToNext) return;
         console.log("AI 분석 시작");
-    }, [isToNext]);
+    }
 
 
     return {
