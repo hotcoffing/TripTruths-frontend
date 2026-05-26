@@ -217,8 +217,8 @@ export function useSurvey() {
                 }
             }
 
-            // 분석 페이지로 이동
-            navigate(`/analysis/${inviteCode}`);
+            // 그룹 진행 현황 페이지로 이동
+            navigate(`/group/${inviteCode}`);
             
             return;
         }

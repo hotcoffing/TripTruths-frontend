@@ -136,8 +136,9 @@ export function useGroup() {
 
     // AI 분석 시작 (다음 버튼 클릭 시 실행 / 아직 미구현)
     const handleStartAnalysis = () => {
-        if (!isToNext) return;
-        console.log("AI 분석 시작");
+        if (inviteCode && user?.role === GROUP_ROLE.LEADER) {
+            navigate(`/analysis/${inviteCode}`);
+        }
     }
 
 
