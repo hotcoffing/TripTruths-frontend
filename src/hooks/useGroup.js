@@ -6,11 +6,11 @@ import { GROUP_BUTTON_TEXT, GROUP_POLLING_INTERVAL, GROUP_INVITE_URL, GROUP_CONS
 import { GROUP_STATUS, GROUP_ROLE } from "@/constants/groupStatus";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-function isMemberSurveyCompleted(member) {
+export function isMemberSurveyCompleted(member) {
     return member.surveyCompleted === true || member.surveyCompleted === 1;
 }
 
-function isSameMemberId(memberId, myId) {
+export function isSameMemberId(memberId, myId) {
     if (myId == null || memberId == null) {
         return false;
     }
@@ -44,11 +44,19 @@ export function useGroup() {
     const [memberList, setMemberList] = useState(null);
     const [isToNext, setIsToNext] = useState(false);
     const [nextButtonText, setNextButtonText] = useState(GROUP_BUTTON_TEXT.NOT_READY);
+    
+    const [startAnalysis, setStartAnalysis] = useState(false);
+    const startAnalysisRef = useRef(false);
 
     const memberListRef = useRef(memberList);
     memberListRef.current = memberList;
 
     const analysisTimersRef = useRef({ intervalId: null, timeoutId: null });
+
+    const setAnalysisStarting = (value) => {
+        startAnalysisRef.current = value;
+        setStartAnalysis(value);
+    };
 
     useEffect(() => {
         // 그룹 진행 정보 상태에 따라 타 페이지로 라우팅
@@ -109,6 +117,12 @@ export function useGroup() {
                 const allSurveyCompleted =
                     membersToSet.length ===
                     membersToSet.filter((member) => isMemberSurveyCompleted(member)).length;
+
+                // 분석 시작 대기/진행 중에는 멤버·그룹 정보만 갱신 (버튼 텍스트는 유지)
+                if (startAnalysisRef.current) {
+                    console.log("현재 분석중입니다.");
+                    return;
+                }
 
                 // 모든 멤버의 설문 완료 여부 확인 결과에 따른 버튼 텍스트 설정
                 if (!allSurveyCompleted) {
@@ -191,16 +205,26 @@ export function useGroup() {
 
     // AI 분석 시작
     const handleStartAnalysis = () => {
+        // 멤버 목록이 없거나 분석 가능 상태가 아닌 경우 종료
         if (!Array.isArray(memberList) || !isToNext) return;
+
+        // 방장이 아니거나 초대 코드가 없는 경우 종료
         if (user?.role !== GROUP_ROLE.LEADER || !inviteCode) return;
 
+        // 멤버 목록 길이 조회
         const memberCountAtClick = memberList.length;
+
+        // 모든 멤버가 설문을 완료했는지 조회
         const allSurveyCompletedAtClick =
             memberCountAtClick > 0 &&
             memberList.every((member) => isMemberSurveyCompleted(member));
 
         if (!allSurveyCompletedAtClick) return;
 
+        // 분석 시작 대기 (폴링 시 버튼 텍스트 덮어쓰기 방지)
+        setAnalysisStarting(true);
+
+        // 타이머 초기화
         clearAnalysisTimers();
         setIsToNext(false);
 
@@ -225,22 +249,24 @@ export function useGroup() {
                 currentList.every((member) => isMemberSurveyCompleted(member));
 
             if (memberCountAtClick !== currentLength) {
-                console.log("멤버 목록에 변동이 있습니다.");
                 setIsToNext(allSurveyCompletedNow);
                 setNextButtonText(
                     allSurveyCompletedNow
                         ? GROUP_BUTTON_TEXT.LEADER_READY
                         : GROUP_BUTTON_TEXT.NOT_READY
                 );
+                setAnalysisStarting(false);
                 return;
             }
 
             if (allSurveyCompletedNow) {
-                console.log("멤버 목록에 변동이 없습니다.");
+                console.log(`분석 시작 상태: ${startAnalysisRef.current}`);
+                setAnalysisStarting(false);
                 navigate(`/analysis/${inviteCode}`);
                 return;
             }
 
+            setAnalysisStarting(false);
             setIsToNext(false);
             setNextButtonText(GROUP_BUTTON_TEXT.NOT_READY);
         }, GROUP_POLLING_INTERVAL);
@@ -260,7 +286,5 @@ export function useGroup() {
         shareKakao,
         handleMoveSurveyPage,
         handleStartAnalysis,
-        isMemberSurveyCompleted,
-        isSameMemberId,
     };
 }
