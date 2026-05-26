@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchGroupsData } from "@/apis/tripGroupsApi";
 import { shareInviteLink } from "@/utils/kakaoShare";
 import { getStoredJson } from "@/utils/getStorage";
@@ -44,6 +44,11 @@ export function useGroup() {
     const [memberList, setMemberList] = useState(null);
     const [isToNext, setIsToNext] = useState(false);
     const [nextButtonText, setNextButtonText] = useState(GROUP_BUTTON_TEXT.NOT_READY);
+
+    const memberListRef = useRef(memberList);
+    memberListRef.current = memberList;
+
+    const analysisTimersRef = useRef({ intervalId: null, timeoutId: null });
 
     useEffect(() => {
         // 그룹 진행 정보 상태에 따라 타 페이지로 라우팅
@@ -96,6 +101,7 @@ export function useGroup() {
 
                 // 그룹 정보 설정
                 setGroupInfo(parsedInvitedGroupData);
+
                 // 멤버 목록 설정
                 setMemberList(membersToSet);
 
@@ -126,8 +132,6 @@ export function useGroup() {
                 console.error(GROUP_CONSOLE_MESSAGE.LOAD_ERROR_MESSAGE, error);
             }
         };
-
-        const shouldFetchImmediately = groupInfo === null || surveySubmitted;
 
         // 그룹 정보가 없거나 설문 완료 여부에 따라 그룹 데이터 조회
         if (groupInfo === null || surveySubmitted) {
@@ -178,13 +182,71 @@ export function useGroup() {
         }
     }
 
-    // AI 분석 시작 (다음 버튼 클릭 시 실행 / 아직 미구현)
-    const handleStartAnalysis = () => {
-        if (inviteCode && user?.role === GROUP_ROLE.LEADER) {
-            navigate(`/analysis/${inviteCode}`);
-        }
-    }
+    const clearAnalysisTimers = () => {
+        const { intervalId, timeoutId } = analysisTimersRef.current;
+        if (intervalId != null) clearInterval(intervalId);
+        if (timeoutId != null) clearTimeout(timeoutId);
+        analysisTimersRef.current = { intervalId: null, timeoutId: null };
+    };
 
+    // AI 분석 시작
+    const handleStartAnalysis = () => {
+        if (!Array.isArray(memberList) || !isToNext) return;
+        if (user?.role !== GROUP_ROLE.LEADER || !inviteCode) return;
+
+        const memberCountAtClick = memberList.length;
+        const allSurveyCompletedAtClick =
+            memberCountAtClick > 0 &&
+            memberList.every((member) => isMemberSurveyCompleted(member));
+
+        if (!allSurveyCompletedAtClick) return;
+
+        clearAnalysisTimers();
+        setIsToNext(false);
+
+        const waitSeconds = GROUP_POLLING_INTERVAL / 1000;
+        setNextButtonText(`${waitSeconds}초 후 시작`);
+
+        let remaining = waitSeconds;
+        const intervalId = setInterval(() => {
+            remaining -= 1;
+            if (remaining > 0) {
+                setNextButtonText(`${remaining}초 후 시작`);
+            }
+        }, 1000);
+
+        const timeoutId = setTimeout(() => {
+            clearAnalysisTimers();
+
+            const currentList = memberListRef.current;
+            const currentLength = Array.isArray(currentList) ? currentList.length : 0;
+            const allSurveyCompletedNow =
+                currentLength > 0 &&
+                currentList.every((member) => isMemberSurveyCompleted(member));
+
+            if (memberCountAtClick !== currentLength) {
+                console.log("멤버 목록에 변동이 있습니다.");
+                setIsToNext(allSurveyCompletedNow);
+                setNextButtonText(
+                    allSurveyCompletedNow
+                        ? GROUP_BUTTON_TEXT.LEADER_READY
+                        : GROUP_BUTTON_TEXT.NOT_READY
+                );
+                return;
+            }
+
+            if (allSurveyCompletedNow) {
+                console.log("멤버 목록에 변동이 없습니다.");
+                navigate(`/analysis/${inviteCode}`);
+                return;
+            }
+
+            setIsToNext(false);
+            setNextButtonText(GROUP_BUTTON_TEXT.NOT_READY);
+        }, GROUP_POLLING_INTERVAL);
+
+        analysisTimersRef.current = { intervalId, timeoutId };
+    };
 
     return {
         user,
