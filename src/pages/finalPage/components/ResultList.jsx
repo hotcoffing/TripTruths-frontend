@@ -64,13 +64,13 @@ const ResultList = () => {
                   {item.label}
                 </span>
                 <span className={styles['result-card__votes']}>
-                  {`(${item.votes}\ud45c)`}
+                  {`(${item.votes}표)`}
                 </span>
               </div>
 
               <div className={styles['result-card__side']}>
                 {item.selected ? (
-                  <span className={styles['result-card__badge']}>{'\uc120\uc810'}</span>
+                  <span className={styles['result-card__badge']}>선점</span>
                 ) : null}
                 <span className={styles['result-card__toggle']}>
                   <ChevronIcon open={isOpen} />

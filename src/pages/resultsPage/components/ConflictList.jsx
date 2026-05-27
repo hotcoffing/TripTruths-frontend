@@ -1,16 +1,16 @@
-import { conflictCards } from '@/constants/conflictCards';
-import styles from './ConflictList.module.scss';
+import { conflictCards as fallbackConflictCards } from '@/constants/conflictCards';
 import wallet from '@/assets/images/wallet.svg';
 import clock from '@/assets/images/clock.svg';
 import memo from '@/assets/images/memo.svg';
+import styles from './ConflictList.module.scss';
 
 const ConflictIcon = ({ type }) => {
-  if (type === 'wallet') return <img src={wallet} alt="예산" />;
-  if (type === 'pulse') return <img src={clock} alt="예산" />;
-  return <img src={memo} alt="예산" />;
+  if (type === 'wallet') return <img src={wallet} alt="예산 아이콘" />;
+  if (type === 'pulse') return <img src={clock} alt="스타일 아이콘" />;
+  return <img src={memo} alt="갈등 아이콘" />;
 };
 
-const ConflictList = () => {
+const ConflictList = ({ conflictCards = fallbackConflictCards }) => {
   return (
     <div className={styles['results-conflict-list']}>
       {conflictCards.map((card) => (

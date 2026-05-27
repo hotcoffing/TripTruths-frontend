@@ -22,6 +22,8 @@ export const postVotes = async (planId, tripGroupId, userId) => {
 };
 
 export const getVotes = async (tripGroupId) => {
-  const response = await instance.get(`/v1/trip-groups/${tripGroupId}/votes`);
+  const response = await instance.get(
+    `v1/recommend-plans/api/v1/trip-groups/${tripGroupId}/votes`,
+  );
   return response.data;
 };
