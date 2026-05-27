@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './AnalysisStepList.module.scss';
 import { ANALYSIS_STEPS } from '@/constants/analysisSteps';
 import AnalysisStepItem from './AnalysisStepItem';
@@ -12,9 +12,14 @@ const AnalysisStepList = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { inviteCode } = useParams();
   const { tripGroupId } = storage.get(inviteCode);
+  const hasStartedAnalysisRef = useRef(false);
 
   //초기 분석 시작
   useEffect(() => {
+    if (!tripGroupId || hasStartedAnalysisRef.current) return;
+
+    hasStartedAnalysisRef.current = true;
+
     const startAnalysis = async () => {
       try {
         const response = await postAnalysis(tripGroupId);
