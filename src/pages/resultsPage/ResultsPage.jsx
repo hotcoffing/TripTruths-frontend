@@ -39,9 +39,15 @@ const ResultsPage = () => {
         const rawResult = response?.result;
         const parsedResult =
           typeof rawResult === 'string' ? JSON.parse(rawResult) : rawResult;
-
+        console.log(rawResult);
         setConflictCards(parsedResult?.conflictCards ?? []);
         setPlans(parsedResult?.topPlans ?? []);
+        if (
+          parsedResult?.conflictCards.length == 0 ||
+          parsedResult?.topPlans == 0
+        ) {
+          navigate(`/results/e/${inviteCode}`, replace);
+        }
       } catch (err) {
         console.log('결과 가져오기 실패', err);
         navigate(`/results/e/${inviteCode}`, replace);
