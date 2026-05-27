@@ -1,9 +1,7 @@
-import { useState } from 'react';
-import { topPlans } from '@/constants/topPlans';
+import { useMemo, useState } from 'react';
+import { topPlans as fallbackPlans } from '@/constants/topPlans';
 import styles from './ResultList.module.scss';
 import PlanTimeline from './PlanTimeline';
-
-const PLAN_VOTES = [3, 1, 1];
 
 const ChevronIcon = ({ open = false }) => (
   <svg
@@ -25,16 +23,24 @@ const ChevronIcon = ({ open = false }) => (
   </svg>
 );
 
-const RESULT_ITEMS = topPlans.map((plan, index) => ({
-  id: plan.title,
-  label: plan.title,
-  votes: PLAN_VOTES[index] ?? 0,
-  selected: index === 0,
-  sections: plan.sections,
-}));
+const ResultList = ({ plans = fallbackPlans, voteList = [] }) => {
+  const resultItems = useMemo(() => {
+    const maxVoteCount = voteList.reduce(
+      (max, vote) => Math.max(max, vote?.voteCount ?? 0),
+      0,
+    );
 
-const ResultList = () => {
-  const [openCardId, setOpenCardId] = useState(RESULT_ITEMS[0]?.id ?? null);
+    return plans.map((plan, index) => ({
+      id: plan.title,
+      label: plan.title,
+      votes: voteList[index]?.voteCount ?? 0,
+      selected:
+        (voteList[index]?.voteCount ?? 0) === maxVoteCount && maxVoteCount > 0,
+      sections: plan.sections,
+    }));
+  }, [plans, voteList]);
+
+  const [openCardId, setOpenCardId] = useState(resultItems[0]?.id ?? null);
 
   const toggleCard = (cardId) => {
     setOpenCardId((current) => (current === cardId ? null : cardId));
@@ -42,7 +48,7 @@ const ResultList = () => {
 
   return (
     <ul className={styles['final-page__result-list']}>
-      {RESULT_ITEMS.map((item) => {
+      {resultItems.map((item) => {
         const isOpen = openCardId === item.id;
 
         return (
@@ -61,11 +67,11 @@ const ResultList = () => {
             >
               <div className={styles['result-card__text']}>
                 <span className={styles['result-card__label']}>
-                  {item.label}
+                  📍{item.label}
                 </span>
-                <span className={styles['result-card__votes']}>
-                  {`(${item.votes}표)`}
-                </span>
+                <span
+                  className={styles['result-card__votes']}
+                >{`(${item.votes}표)`}</span>
               </div>
 
               <div className={styles['result-card__side']}>
