@@ -1,11 +1,13 @@
-import { CarSvg, PulseSvg, WalletSvg } from '@/assets/svg/ResultsSvgs';
 import { conflictCards } from '@/constants/conflictCards';
 import styles from './ConflictList.module.scss';
+import wallet from '@/assets/images/wallet.svg';
+import clock from '@/assets/images/clock.svg';
+import memo from '@/assets/images/memo.svg';
 
 const ConflictIcon = ({ type }) => {
-  if (type === 'wallet') return <WalletSvg />;
-  if (type === 'pulse') return <PulseSvg />;
-  return <CarSvg />;
+  if (type === 'wallet') return <img src={wallet} alt="예산" />;
+  if (type === 'pulse') return <img src={clock} alt="예산" />;
+  return <img src={memo} alt="예산" />;
 };
 
 const ConflictList = () => {

@@ -2,8 +2,14 @@ import Button from '@/components/common/button/Button';
 import styles from './FinalPage.module.scss';
 import celebrateSvg from '@/assets/images/celebrate.svg';
 import ResultList from './components/ResultList';
+import { useNavigate } from 'react-router-dom';
 
 const FinalPage = () => {
+  const navigate = useNavigate();
+
+  const handleNewGroup = () => {
+    navigate('/');
+  };
   return (
     <div className={styles['final-page']}>
       <section className={styles['final-page__hero']}>
@@ -24,7 +30,7 @@ const FinalPage = () => {
           <ResultList />
         </section>
 
-        <Button type="button" variant="surface-muted">
+        <Button onClick={handleNewGroup} type="button" variant="surface-muted">
           새로운 그룹 생성하기
         </Button>
       </main>

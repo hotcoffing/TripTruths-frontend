@@ -1,8 +1,28 @@
 import styles from './ResultsPage.module.scss';
 import PlanList from './components/PlanList';
 import ConflictList from './components/ConflictList';
+import { useEffect } from 'react';
+import { getAnalysisResults } from '@/apis/analysisApi';
+import { useParams } from 'react-router-dom';
+import { storage } from '@/utils/storage';
 
 const ResultsPage = () => {
+  const { inviteCode } = useParams();
+  const { tripGroupId } = storage.get(inviteCode);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const response = await getAnalysisResults(tripGroupId);
+        console.log(response);
+      } catch (err) {
+        console.log('결과 가져오기 실패', err);
+      }
+    };
+
+    fetchResults();
+  }, [tripGroupId]);
+
   return (
     <div className={styles['results-page']}>
       <div className={styles['results-phone-frame']}>
