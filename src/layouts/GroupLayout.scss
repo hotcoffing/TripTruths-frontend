@@ -1,5 +1,5 @@
-$group-font-family: "Pretendard Variable", sans-serif;
-$group-page-bg-color: #fcfdfd;
+$group-font-family: var(--font-family-body);
+$group-page-bg-color: var(--color-bg);
 $group-padding-x: 20px;
 $group-desktop-max-width: 480px;
 $group-section-gap-after-header: 40px;
