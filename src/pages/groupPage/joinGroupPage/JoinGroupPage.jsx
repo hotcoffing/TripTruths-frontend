@@ -19,11 +19,11 @@ const JoinGroupPage = () => {
     handleSubmit,
   } = useJoinGroupForm();
   const navigate = useNavigate();
-  const { inviteCode, storedGroup, tripGroupId } = useStoredGroup();
+  const { inviteCode, tripGroupId, memberId } = useStoredGroup();
 
   useEffect(() => {
     const fetchGroupStatus = async () => {
-      if (!tripGroupId) {
+      if (!memberId) {
         try {
           const tripGroupId = await getInviteGroupInfo(inviteCode).then(
             (res) => res.result.tripGroupId,
@@ -41,7 +41,7 @@ const JoinGroupPage = () => {
           } else if (status === 'COMPLETED') {
             navigate(`/final/${inviteCode}`);
           } else {
-            navigate('/');
+            navigate(`/group/join/${inviteCode}`);
           }
 
           console.log(tripGroupId, status);
@@ -68,7 +68,7 @@ const JoinGroupPage = () => {
     };
 
     fetchGroupStatus();
-  }, [inviteCode, navigate, storedGroup]);
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className={styles['create-group-page']}>
