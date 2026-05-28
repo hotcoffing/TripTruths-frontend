@@ -12,10 +12,6 @@ $color-text-sub: #848B9C;
         calc(60px + env(safe-area-inset-top, 0px))
         34px
         32px;
-    @media (min-width: 768px) {
-        padding: 40px 20px 28px;
-    }
-
     .header-name {
         margin: 0 0 7px;
         font-size: 18px;
@@ -31,5 +27,12 @@ $color-text-sub: #848B9C;
         font-weight: 300;
         line-height: 140%;
         color: $color-text-sub;
+    }
+}
+
+// 모바일 브라우저에서만 여백 조정
+:global(.is-browser) .header-container {
+    @media (max-height: 767px) {
+        padding: 40px 20px 28px;
     }
 }

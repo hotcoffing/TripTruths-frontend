@@ -35,14 +35,22 @@ $color-page-loading-text: #ff822e;
         margin-top: layout.$group-section-gap-after-header;
         margin-bottom: layout.$group-section-gap-invite-progress;
     }
-
     .progress-section {
         flex: 1;
         min-height: 0;
-        overflow: hidden;
     }
     
     .next-button-container {
         @include layout.group-page-footer;
+    }
+}
+
+// 모바일 브라우저에서만 여백 조정
+:global(.is-browser) .group-container {
+    @media (max-height: 767px) {
+        .invite-section {
+            margin-top: layout.$group-section-gap-after-header * 0.6;
+            margin-bottom: layout.$group-section-gap-invite-progress * 0.6;
+        }
     }
 }
