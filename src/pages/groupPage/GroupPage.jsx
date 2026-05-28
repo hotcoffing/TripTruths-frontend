@@ -30,18 +30,24 @@ function GroupPage() {
 
     return (
         <div className={style["group-container"]}>
-            <GroupHeader
-                groupName={groupInfo.name}
-                tripLength={groupInfo.tripLength}
-                startDate={groupInfo.startDate}
-                endDate={groupInfo.endDate}
-            />
-            <GroupInvite handleCopyLink={copyLink} handleKakao={shareKakao} />
-            <GroupInputProgress
-                myId={user?.memberId}
-                memberList={memberList}
-                handleMovePage={handleMoveSurveyPage}
-            />
+            <div className={style["header-section"]}>
+                <GroupHeader
+                    groupName={groupInfo.name}
+                    tripLength={groupInfo.tripLength}
+                    startDate={groupInfo.startDate}
+                    endDate={groupInfo.endDate}
+                />
+            </div>
+            <div className={style["invite-section"]}>
+                <GroupInvite handleCopyLink={copyLink} handleKakao={shareKakao} />
+            </div>
+            <div className={style["progress-section"]}>
+                <GroupInputProgress
+                    myId={user?.memberId}
+                    memberList={memberList}
+                    handleMovePage={handleMoveSurveyPage}
+                />
+            </div>
             <div className={style["next-button-container"]}>
                 <Button
                     type="next-action"
