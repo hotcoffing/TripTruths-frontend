@@ -11,12 +11,11 @@ $group-body-margin-bottom: 35px;
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    min-height: var(--app-vh, 100dvh);
     box-sizing: border-box;
     background-color: $group-page-bg-color;
     font-family: $group-font-family;
-    overflow: hidden;
+    overflow: visible;
 
     @media (min-width: 768px) {
         max-width: $group-desktop-max-width;

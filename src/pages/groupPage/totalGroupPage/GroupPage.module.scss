@@ -7,13 +7,13 @@ $color-page-loading-text: #ff822e;
     gap: 10px;
     align-items: center;
     justify-content: center;
-    height: 100dvh;
+    min-height: var(--app-vh, 100dvh);
     color: $color-page-loading-text;
     font-size: 18px;
     font-weight: 600;
     line-height: 140%;
     letter-spacing: 0.432px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .group-container {

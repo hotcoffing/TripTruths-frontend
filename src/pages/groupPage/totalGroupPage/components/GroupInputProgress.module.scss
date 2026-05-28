@@ -43,7 +43,7 @@ $color-surface-default: #FFFFFF;
         flex-direction: column;
         gap: 8px;
         min-height: 0;
-        overflow-y: auto;
+        overflow: visible;
         -webkit-overflow-scrolling: touch;
     }
 
