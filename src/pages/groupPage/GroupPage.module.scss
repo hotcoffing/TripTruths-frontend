@@ -5,6 +5,25 @@ $group-desktop-max-width: 480px;
 $section-gap-after-header: 40px;
 $section-gap-invite-progress: 40px;
 $section-gap-progress-button: 20px;
+$color-text-primary: #FF822E;
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    font-family: "Pretendard Variable", sans-serif;
+    color: $color-text-primary;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 140%;
+    letter-spacing: 0.432px;
+    overflow: hidden;
+}
 
 .group-container {
     display: flex;
